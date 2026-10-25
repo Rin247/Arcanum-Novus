@@ -5,7 +5,7 @@ bash "$arcanum_project/prepare-source.sh"
 arcanum_build=${ARCANUM_BUILD_DIR:-"$arcanum_project/build"}
 arcanum_sdk=${ARCANUM_BUILD_SDK:-/tmp/arcanum-ce-sdk}
 arcanum_cache=${ARCANUM_DEPENDENCY_CACHE:-/tmp/arcanum-ce-build/_deps}
-args=(-DCMAKE_BUILD_TYPE=RelWithDebInfo -DSDL_WAYLAND=OFF -DSDL_OPENGL=OFF)
+args=(-DCMAKE_BUILD_TYPE=RelWithDebInfo -DSDL_X11=OFF -DSDL_WAYLAND=ON -DSDL_OPENGL=OFF)
 if [[ -x "$arcanum_sdk/usr/bin/cmake" ]]; then
     arcanum_cmake="$arcanum_sdk/usr/bin/cmake"
     export LD_LIBRARY_PATH="$arcanum_sdk/usr/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"

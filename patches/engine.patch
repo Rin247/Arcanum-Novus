@@ -2527,7 +2527,7 @@ diff --git a/src/game/highres_config.c b/src/game/highres_config.c
      if (stream == NULL) {
          return;
      }
-@@ -44,8 +46,8 @@
+@@ -44,14 +46,20 @@
  void highres_config_reset(void)
  {
      highres_config.loaded = false;
@@ -2538,7 +2538,19 @@ diff --git a/src/game/highres_config.c b/src/game/highres_config.c
      highres_config.windowed = false;
      highres_config.show_fps = false;
      highres_config.scroll_fps = 35;
-@@ -99,15 +101,17 @@
+     highres_config.scroll_dist = 10;
+     highres_config.logos = true;
+     highres_config.intro = true;
++    highres_config.vsync = true;
++    highres_config.max_fps = 0;
++    highres_config.vrr = false;
++    highres_config.font_scale = 100;
++    highres_config.upscale_method = 0;
++    highres_config.upscale_quality = 0;
+ }
+ 
+ void highres_config_parse_line(char* line)
+@@ -99,15 +107,17 @@
      }
  
      if (SDL_strcasecmp(key_start, "Width") == 0) {
@@ -2560,7 +2572,35 @@ diff --git a/src/game/highres_config.c b/src/game/highres_config.c
      } else if (SDL_strcasecmp(key_start, "ShowFPS") == 0) {
          highres_config.show_fps = value != 0;
      } else if (SDL_strcasecmp(key_start, "ScrollFPS") == 0) {
-@@ -145,8 +149,9 @@
+@@ -122,6 +132,27 @@
+         highres_config.logos = value != 0;
+     } else if (SDL_strcasecmp(key_start, "Intro") == 0) {
+         highres_config.intro = value != 0;
++    } else if (SDL_strcasecmp(key_start, "VSync") == 0) {
++        highres_config.vsync = value != 0;
++    } else if (SDL_strcasecmp(key_start, "MaxFPS") == 0
++            || SDL_strcasecmp(key_start, "FPSLimit") == 0
++            || SDL_strcasecmp(key_start, "FpsLimit") == 0) {
++        if (value >= 0) highres_config.max_fps = value;
++    } else if (SDL_strcasecmp(key_start, "VRR") == 0
++            || SDL_strcasecmp(key_start, "GSync") == 0
++            || SDL_strcasecmp(key_start, "AdaptiveSync") == 0) {
++        highres_config.vrr = value != 0;
++        if (highres_config.vrr) highres_config.vsync = false;
++    } else if (SDL_strcasecmp(key_start, "FontScale") == 0
++            || SDL_strcasecmp(key_start, "DialogFont") == 0
++            || SDL_strcasecmp(key_start, "LogbookFont") == 0) {
++        if (value > 0) highres_config.font_scale = value;
++    } else if (SDL_strcasecmp(key_start, "UpscaleMethod") == 0
++            || SDL_strcasecmp(key_start, "Upscaling") == 0
++            || SDL_strcasecmp(key_start, "Upscale") == 0) {
++        if (value >= 0) highres_config.upscale_method = value;
++    } else if (SDL_strcasecmp(key_start, "UpscaleQuality") == 0) {
++        if (value >= 0) highres_config.upscale_quality = value;
+     }
+ }
+ 
+@@ -145,8 +176,9 @@
          return false;
      }
  
@@ -2571,6 +2611,22 @@ diff --git a/src/game/highres_config.c b/src/game/highres_config.c
          return false;
      }
  
+diff --git a/src/game/highres_config.h b/src/game/highres_config.h
+--- a/src/game/highres_config.h
++++ b/src/game/highres_config.h
+@@ -13,6 +13,12 @@
+     int scroll_dist;
+     bool logos;
+     bool intro;
++    bool vsync;
++    int max_fps;
++    bool vrr;
++    int font_scale;
++    int upscale_method;
++    int upscale_quality;
+ } HighResConfig;
+ 
+ void highres_config_load(void);
 diff --git a/src/game/item.c b/src/game/item.c
 --- a/src/game/item.c
 +++ b/src/game/item.c
@@ -3469,7 +3525,7 @@ diff --git a/src/main.c b/src/main.c
      TigInitInfo init_info;
      TigVideoScreenshotSettings screenshotter;
      GameInitInfo game_init_info;
-@@ -205,11 +215,22 @@
+@@ -205,11 +215,26 @@
  
      // Specify window name.
      init_info.flags |= TIG_INITIALIZE_SET_WINDOW_NAME;
@@ -3488,12 +3544,16 @@ diff --git a/src/main.c b/src/main.c
 +        modern_graphics_init(startup_window);
 +        SDL_PumpEvents();
 +    }
++    SDL_Renderer* startup_renderer;
++    if(tig_video_renderer_get(&startup_renderer)==TIG_OK) {
++        SDL_SetRenderVSync(startup_renderer, highres_config->vrr ? 0 : (highres_config->vsync ? 1 : 0));
++    }
 +
 +    if (!modern_uap_startup()) {tig_exit(); return EXIT_SUCCESS;}
  
      screenshotter.key = SDL_SCANCODE_F12;
      screenshotter.field_4 = 0;
-@@ -290,9 +311,25 @@
+@@ -290,9 +315,25 @@
          return EXIT_SUCCESS; // FIXME: Should be `EXIT_FAILURE`.
      }
  
@@ -3519,7 +3579,7 @@ diff --git a/src/main.c b/src/main.c
  
      if (!mainmenu_ui_handle()) {
          gameuilib_exit();
-@@ -317,6 +354,7 @@
+@@ -317,6 +358,7 @@
  
      main_loop();
  
@@ -3527,7 +3587,7 @@ diff --git a/src/main.c b/src/main.c
      gameuilib_mod_unload();
      gamelib_mod_unload();
      gameuilib_exit();
-@@ -383,8 +421,10 @@
+@@ -383,10 +425,23 @@
              output_profile_data = false;
          }
  
@@ -3537,8 +3597,21 @@ diff --git a/src/main.c b/src/main.c
 +        modern_autosave_tick();
          iso_redraw();
          tig_window_display();
++        const HighResConfig* hc = highres_config_get();
++        if (hc->max_fps > 0) {
++            static Uint64 last_frame_tick = 0;
++            Uint64 now = SDL_GetTicks();
++            Uint64 interval = 1000u / (Uint64)hc->max_fps;
++            if (last_frame_tick && now - last_frame_tick < interval) {
++                SDL_Delay((Uint32)(interval - (now - last_frame_tick)));
++                now = SDL_GetTicks();
++            }
++            last_frame_tick = now;
++        }
  
-@@ -698,6 +738,7 @@
+         pc_obj = player_get_local_pc_obj();
+ 
+@@ -698,6 +753,7 @@
  // 0x401F50
  void handle_mouse_scroll(void)
  {
@@ -3546,7 +3619,7 @@ diff --git a/src/main.c b/src/main.c
      TigMouseState mouse_state;
      int width;
      int height;
-@@ -743,25 +784,26 @@
+@@ -743,25 +799,26 @@
  // 0x402010
  void handle_keyboard_scroll(void)
  {
@@ -4891,7 +4964,7 @@ diff --git a/src/ui/intgame.c b/src/ui/intgame.c
                  }
                  break;
              case OBJ_TYPE_WEAPON:
-@@ -8833,3 +8877,230 @@
+@@ -8833,3 +8877,231 @@
  
      follower_ui_show();
  }
@@ -5000,6 +5073,7 @@ diff --git a/src/ui/intgame.c b/src/ui/intgame.c
 +/* Resize all world subsystems together; the native UI uses physical pixels. */
 +bool modern_world_resize(int width, int height, float anchor_x, float anchor_y)
 +{
++    if (width < 800 || height < 600 || width > 4096 || height > 4096) return false;
 +    TigWindowData data;
 +    if (tig_window_data(dword_64C52C, &data) != TIG_OK) return false;
 +    int old_width = data.rect.width, old_height = data.rect.height;
