@@ -30,7 +30,7 @@ static void notebook_sync(void)
     if(!strcmp(id,notebook_identity))return;
     SDL_strlcpy(notebook_identity,id,sizeof(notebook_identity));
     for(char* p=id;*p;p++)if(!SDL_isalnum(*p))*p='_';
-    snprintf(notebook_path,sizeof(notebook_path),"modern-ui/notebook-%s.txt",id);
+    snprintf(notebook_path,sizeof(notebook_path),"Novus/notebook-%s.txt",id);
     journal_mark_count=map_memo_count=0;tracked_quest=-1;memo_edit=-1;memo_placing=false;tracked_text[0]=0;tracked_refresh=0;
     FILE* f=fopen(notebook_path,"r");if(!f)return;
     char line[512];

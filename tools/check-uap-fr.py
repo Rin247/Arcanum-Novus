@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--game', required=True, type=Path)
 parser.add_argument('--uap', required=True, type=Path)
 args = parser.parse_args()
-active = args.game/'modern-ui/uap-fr/active'
+active = args.game/'Novus/uap-fr/active'
 assert (active/'ready').read_text() == '2.0.2-fr-1\n'
 catalog = json.loads((ROOT/'tools/uap/data/catalog.json').read_text())
 for name, expected in catalog['patch'].items():

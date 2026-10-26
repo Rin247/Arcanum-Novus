@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 cd -- "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-if [ ! -f arcanum1.dat ] || [ ! -f modern-ui/Book.ttf ]; then
+if [ ! -f arcanum1.dat ] || [ ! -f Novus/Book.ttf ]; then
     printf '%s\n' 'Extract the complete ZIP into your Arcanum game folder, beside arcanum1.dat.' >&2
     exit 1
 fi

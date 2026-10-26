@@ -30,8 +30,8 @@ class FullPackageTests(unittest.TestCase):
     def test_contents_and_personal_exclusions(self):
         public = ['Arcanum4.dat', 'modules/Arcanum.PATCH9', 'data/Proto/item.pro',
                   'modules/Arcanum/maps/Tarant/map.prp', 'Proto/weapon.pro']
-        private = ['arcanum.cfg', 'HighRes/config.ini', 'modern-ui/graphics.ini',
-                   'modern-ui/notebook-person.txt', 'modules/Arcanum/Save/SlotAuto.tfaf',
+        private = ['arcanum.cfg', 'HighRes/config.ini', 'Novus/graphics.ini',
+                   'Novus/notebook-person.txt', 'modules/Arcanum/Save/SlotAuto.tfaf',
                    'modules/Arcanum/TIGCache/maps/file.bin', 'data/Players/hero.txt',
                    'modules/Arcanum/screen0000.bmp', 'modules/Arcanum/.DS_Store',
                    'modules/Arcanum/Screenshots/shot.png', 'Arcanum Modern.app/Contents/file',
@@ -48,8 +48,8 @@ class FullPackageTests(unittest.TestCase):
         tile = bytes(range(256))*12289
         (cache/'0_0_0.png').write_bytes(tile)
         (cache/'.DS_Store').write_bytes(b'private')
-        (self.game/'modern-ui').mkdir()
-        (self.game/'modern-ui/local-maps').symlink_to(self.work/'cache', target_is_directory=True)
+        (self.game/'Novus').mkdir()
+        (self.game/'Novus/Maps').symlink_to(self.work/'cache', target_is_directory=True)
         self.put('data/file.mes', b'public')
         (self.game/'data/private-link').symlink_to(self.put('secret.txt'))
         files = p.game_files(self.game)
@@ -59,7 +59,7 @@ class FullPackageTests(unittest.TestCase):
         p.write_archive(archive, files, {'includes_game_data': True})
         with zipfile.ZipFile(archive) as z:
             self.assertIsNone(z.testzip())
-            name = 'modern-ui/local-maps/Arcanum/21/0_0_0.png'
+            name = 'Novus/Maps/Arcanum/21/0_0_0.png'
             self.assertEqual(z.read(name), tile)
             self.assertEqual(z.getinfo(name).compress_type, zipfile.ZIP_STORED)
             metadata = json.loads(z.read('ArcanumModern/manifest.json'))

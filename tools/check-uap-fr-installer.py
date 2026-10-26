@@ -30,7 +30,7 @@ with tempfile.TemporaryDirectory(prefix='uap-installer-', dir=ROOT/'build') as d
         target.parent.mkdir(parents=True, exist_ok=True)
         os.link(find(a.game, name), target)
     language = 'en' if a.english_fixture else 'fr'
-    overlay = game/f'modern-ui/uap-{language}/active'
+    overlay = game/f'Novus/uap-{language}/active'
     if a.english_fixture:
         # The proprietary English game is not distributed with this test. Replace
         # one archive in this isolated fixture with a minimal English MES record.
@@ -54,7 +54,7 @@ with tempfile.TemporaryDirectory(prefix='uap-installer-', dir=ROOT/'build') as d
     run('decline', 0)
     run('probe', 0)
     assert not (game/'save-backups').exists()
-    (game/f'modern-ui/uap-{language}/choice').unlink()
+    (game/f'Novus/uap-{language}/choice').unlink()
     run('install', 1, game/'missing-installer.exe')
     assert not overlay.exists()
     (game/'save-backups').write_text('Prevent backup directory creation')

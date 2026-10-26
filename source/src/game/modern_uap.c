@@ -2,8 +2,8 @@
 #include <tig/tig.h>
 #include "game/gamelib.h"
 
-#define UAP_ROOT_FR "modern-ui/uap-fr/active/"
-#define UAP_ROOT_EN "modern-ui/uap-en/active/"
+#define UAP_ROOT_FR "Novus/uap-fr/active/"
+#define UAP_ROOT_EN "Novus/uap-en/active/"
 static char module_paths[3][TIG_MAX_PATH];
 static bool disabled;
 

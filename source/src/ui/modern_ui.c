@@ -224,7 +224,7 @@ static SDL_Texture* rgba_texture(int w, int h, Uint32* pixels)
 SDL_Texture* modern_ui_loading_label(SDL_Renderer* target,const char* source,float size)
 {
     size_t length;
-    unsigned char* data=SDL_LoadFile("modern-ui/Book.ttf",&length);
+    unsigned char* data=SDL_LoadFile("Novus/Book.ttf",&length);
     if(!data)return NULL;
     stbtt_fontinfo font;
     if(!stbtt_InitFont(&font,data,stbtt_GetFontOffsetForIndex(data,0))){SDL_free(data);return NULL;}
@@ -2190,10 +2190,10 @@ static void search_focus(bool on)
 
 static void save_settings(void)
 {
-    FILE* f=fopen("modern-ui/settings.ini.tmp","w");
+    FILE* f=fopen("Novus/settings.ini.tmp","w");
     if(f) {
         fprintf(f,"TextSize=%d\n",body_size);
-        if(fclose(f)==0) SDL_RenamePath("modern-ui/settings.ini.tmp","modern-ui/settings.ini");
+        if(fclose(f)==0) SDL_RenamePath("Novus/settings.ini.tmp","Novus/settings.ini");
     }
 }
 
@@ -2449,55 +2449,55 @@ bool modern_ui_init(void)
 {
     if(SDL_getenv("ARCANUM_LEGACY_UI")) return false;
     if(tig_video_renderer_get(&renderer)!=TIG_OK || tig_video_window_get(&window)!=TIG_OK) return false;
-    book_font_data=SDL_LoadFile("modern-ui/Book.ttf",&book_font_size);
-    heading_font_data=SDL_LoadFile("modern-ui/Heading.ttf",&heading_font_size);
+    book_font_data=SDL_LoadFile("Novus/Book.ttf",&book_font_size);
+    heading_font_data=SDL_LoadFile("Novus/Heading.ttf",&heading_font_size);
     if(!book_font_data || !heading_font_data) {modern_ui_exit();return false;}
-    FILE* settings=fopen("modern-ui/settings.ini","r");
+    FILE* settings=fopen("Novus/settings.ini","r");
     if(settings) {int n;if(fscanf(settings,"TextSize=%d",&n)==1 && n>=16 && n<=26) body_size=n;fclose(settings);}
     key_load();
     update_geometry();
     if(!fonts[0].texture || !fonts[1].texture || !fonts[2].texture || !fonts[3].texture) {modern_ui_exit();return false;}
     wood_texture=make_material(false);paper_texture=make_material(true);
-    SDL_Surface* background=SDL_LoadPNG("modern-ui/menu-background.png");
+    SDL_Surface* background=SDL_LoadPNG("Novus/menu-background.png");
     if(background) {
         menu_background_width=(float)background->w;menu_background_height=(float)background->h;
         menu_background=SDL_CreateTextureFromSurface(renderer,background);
         SDL_DestroySurface(background);
     }
-    SDL_Surface* main_menu=SDL_LoadPNG("modern-ui/main-menu.png");
+    SDL_Surface* main_menu=SDL_LoadPNG("Novus/main-menu.png");
     if(main_menu) {
         main_menu_width=(float)main_menu->w;main_menu_height=(float)main_menu->h;
         main_menu_texture=SDL_CreateTextureFromSurface(renderer,main_menu);
         SDL_DestroySurface(main_menu);
         if(main_menu_texture)SDL_SetTextureScaleMode(main_menu_texture,SDL_SCALEMODE_LINEAR);
     }
-    SDL_Surface* single_player=SDL_LoadPNG("modern-ui/single-player.png");
+    SDL_Surface* single_player=SDL_LoadPNG("Novus/single-player.png");
     if(single_player) {
         single_player_width=(float)single_player->w;single_player_height=(float)single_player->h;
         single_player_texture=SDL_CreateTextureFromSurface(renderer,single_player);
         SDL_DestroySurface(single_player);
         if(single_player_texture)SDL_SetTextureScaleMode(single_player_texture,SDL_SCALEMODE_LINEAR);
     }
-    SDL_Surface* hud_surface=SDL_LoadPNG("modern-ui/hud-atlas.png");
+    SDL_Surface* hud_surface=SDL_LoadPNG("Novus/hud-atlas.png");
     if(hud_surface) {
         hud_atlas_width=(float)hud_surface->w;hud_atlas_height=(float)hud_surface->h;
         hud_atlas=SDL_CreateTextureFromSurface(renderer,hud_surface);
         SDL_DestroySurface(hud_surface);
         if(hud_atlas)SDL_SetTextureScaleMode(hud_atlas,SDL_SCALEMODE_LINEAR);
     }
-    SDL_Surface* play_panel=SDL_LoadPNG("modern-ui/play-panel.png");
+    SDL_Surface* play_panel=SDL_LoadPNG("Novus/play-panel.png");
     if(play_panel) {
         play_panel_texture=SDL_CreateTextureFromSurface(renderer,play_panel);
         SDL_DestroySurface(play_panel);
         if(play_panel_texture)SDL_SetTextureScaleMode(play_panel_texture,SDL_SCALEMODE_LINEAR);
     }
-    SDL_Surface* inventory_actions=SDL_LoadPNG("modern-ui/inventory-actions.png");
+    SDL_Surface* inventory_actions=SDL_LoadPNG("Novus/inventory-actions.png");
     if(inventory_actions) {
         inventory_actions_texture=SDL_CreateTextureFromSurface(renderer,inventory_actions);
         SDL_DestroySurface(inventory_actions);
         if(inventory_actions_texture)SDL_SetTextureScaleMode(inventory_actions_texture,SDL_SCALEMODE_LINEAR);
     }
-    SDL_Surface* controls=SDL_LoadPNG("modern-ui/control-icons.png");
+    SDL_Surface* controls=SDL_LoadPNG("Novus/control-icons.png");
     if(controls) {
         control_icons_texture=SDL_CreateTextureFromSurface(renderer,controls);
         SDL_DestroySurface(controls);
@@ -2506,7 +2506,7 @@ bool modern_ui_init(void)
             SDL_SetTextureBlendMode(control_icons_texture,SDL_BLENDMODE_BLEND);
         }
     }
-    SDL_Surface* skill_icons=SDL_LoadPNG("modern-ui/skill-icons.png");
+    SDL_Surface* skill_icons=SDL_LoadPNG("Novus/skill-icons.png");
     if(skill_icons) {
         skill_icons_texture=SDL_CreateTextureFromSurface(renderer,skill_icons);
         SDL_DestroySurface(skill_icons);

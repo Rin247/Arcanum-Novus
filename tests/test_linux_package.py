@@ -47,8 +47,8 @@ class LinuxPackageTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('arcanum1.dat', result.stderr)
             (game/'arcanum1.dat').write_bytes(b'fixture')
-            (game/'modern-ui').mkdir()
-            (game/'modern-ui/Book.ttf').write_bytes(b'fixture')
+            (game/'Novus').mkdir()
+            (game/'Novus/Book.ttf').write_bytes(b'fixture')
             engine = game/'arcanum-modern'
             engine.write_text('#!/bin/sh\npwd\nprintf "%s\\n" "$ARCANUM_IGNORE_DISPLAY_SETTINGS" "$@"\n')
             engine.chmod(0o755)
@@ -76,8 +76,8 @@ class LinuxPackageTests(unittest.TestCase):
                     root = Path(temp)
                     game = root/'game'
                     game.mkdir()
-                    (game/'modern-ui').mkdir()
-                    (game/'modern-ui/Book.ttf').touch()
+                    (game/'Novus').mkdir()
+                    (game/'Novus/Book.ttf').touch()
                     (game/'arcanum1.dat').touch()
                     launcher = (root if script == 'play.sh' else game)/'launch.sh'
                     launcher.write_bytes((ROOT/script).read_bytes())
@@ -120,7 +120,7 @@ def verify_archive(path):
         metadata = json.loads(z.read('ArcanumModern/manifest.json'))
         assert metadata['target'] == 'linux-x86_64' and metadata['includes_game_data'] is False
         assert tuple(map(int, metadata['minimum_glibc'].split('.'))) <= (2, 35)
-        required = {'arcanum-modern', 'Play Arcanum Renaissance.sh'} | {'modern-ui/'+s for s in p.resources.ASSETS}
+        required = {'arcanum-modern', 'Play Arcanum Renaissance.sh'} | {'Novus/'+s for s in p.resources.ASSETS}
         required |= {'ArcanumModern/lib/'+name for name in p.resources.MOVIE_LIBRARIES['linux']}
         assert required.issubset(names)
         for name in names:

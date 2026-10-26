@@ -17,13 +17,13 @@ backup. Automatic preparation is available on Windows 10+, Linux x64 and Apple
 Silicon Macs with macOS 13+.
 
 **No** continues without UAP and remembers the answer. Delete
-`modern-ui/uap-en/choice` to display the offer again. The installer checks the
+`Novus/uap-en/choice` to display the offer again. The installer checks the
 shared original art archives, required game archives and English interface text;
 it skips unrecognized installations and additional gameplay patches. An existing
 `Arcanum5.dat` installation or completed Renaissance UAP overlay is kept.
 
 Original archives remain unchanged. Prepared English data lives in
-`modern-ui/uap-en/active`; the log is `modern-ui/uap-en/preparation.log`.
+`Novus/uap-en/active`; the log is `Novus/uap-en/preparation.log`.
 Only a completed installation is activated. HD maps need preparation again when
 the active game data changes. Release packages include no UAP or original game data.
 

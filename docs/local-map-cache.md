@@ -12,7 +12,7 @@ needed. **Play now** or Escape stops preparation and opens the game with the
 original maps. The next launch resumes preparation, reusing completed tiles.
 Closing the window also stops generation.
 
-The cache is stored in `modern-ui/local-maps/` inside the game folder, with a
+The cache is stored in `Novus/Maps/` inside the game folder, with a
 subfolder for each module, such as `Arcanum`. Allow approximately **8 GB** for
 Arcanum and Vormantown, plus temporary working space. Actual size depends on the
 installed game data. Generated maps are local files and are not included in
@@ -20,7 +20,7 @@ release packages.
 
 Deleting the cache causes preparation to run again at the next launch. You can
 choose **Play now** to continue using the original maps. If preparation fails,
-check the error code on screen and `modern-ui/.map-work/generation.log`.
+check the error code on screen and `Novus/.map-work/generation.log`.
 
 ## Map content and display
 
@@ -48,7 +48,7 @@ reused; missing or changed cache files trigger validation, and source changes
 trigger regeneration. Rewriting loose source files with identical contents does
 not invalidate the cache solely because their timestamps changed.
 
-Generation runs in a separate process using `modern-ui/.map-work/`. Archives are
+Generation runs in a separate process using `Novus/.map-work/`. Archives are
 hard-linked when possible and copied otherwise; loose files are copied and saves
 are excluded. A lock prevents simultaneous generators from writing to the same
 cache. The working directory can be deleted while the game is closed.
@@ -66,7 +66,7 @@ On Windows, use `arcanum-modern.exe`. On macOS, use the executable inside
 
 An optional final argument limits the number of newly rendered tiles. Reaching
 that limit returns exit code 75. The progress file at
-`modern-ui/.map-work/progress` contains `validated_tiles total stage`, where the
+`Novus/.map-work/progress` contains `validated_tiles total stage`, where the
 stage is:
 
 | Value | Meaning |

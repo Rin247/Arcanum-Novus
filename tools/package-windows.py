@@ -93,9 +93,9 @@ def game_files(directory):
     if missing:
         raise ValueError('Incomplete game installation; missing: '+', '.join(sorted(missing)))
     # The HD cache may live outside the installation via a directory symlink.
-    maps = directory/'modern-ui/local-maps'
+    maps = directory/'Novus/Maps'
     if maps.exists():
-        collect(maps.resolve(strict=True), 'modern-ui/local-maps')
+        collect(maps.resolve(strict=True), 'Novus/Maps')
     return files
 
 
@@ -184,13 +184,13 @@ def package(exe, build_dir, output, include_game=None):
     files.update(uap_files('windows'))
     validate_pe_dependencies(files)
     for name in ASSETS:
-        files['modern-ui/'+name] = (ROOT/'game/modern-ui'/name).read_bytes()
+        files['Novus/'+name] = (ROOT/'game/Novus'/name).read_bytes()
     if include_game:
         files.update(game_files(include_game))
         files['ArcanumModern/INSTALL.txt'] = (ROOT/'tools/windows/INSTALL-FULL.txt').read_bytes()
     readme = ROOT/'README.md'
     if readme.exists():
-        files['ArcanumModern/README.md'] = readme.read_text().replace('(resources/aid/LICENSE.txt)', '(licenses/aid.txt)').replace('(game/modern-ui/', '(../modern-ui/').replace('(docs/development.md', '(https://github.com/cdomergue/arcanum-modern/blob/main/docs/development.md').replace('(docs/screenshots/', '(https://raw.githubusercontent.com/cdomergue/arcanum-modern/main/docs/screenshots/').encode()
+        files['ArcanumModern/README.md'] = readme.read_text().replace('(resources/aid/LICENSE.txt)', '(licenses/aid.txt)').replace('(game/Novus/', '(../Novus/').replace('(docs/development.md', '(https://github.com/cdomergue/arcanum-modern/blob/main/docs/development.md').replace('(docs/screenshots/', '(https://raw.githubusercontent.com/cdomergue/arcanum-modern/main/docs/screenshots/').encode()
     cache = (build_dir/'CMakeCache.txt').read_text()
     dependencies = [('SDL3', 'LICENSE.txt'), ('SDL3_mixer','LICENSE.txt'), ('fpattern','LICENSE'), ('zlib','LICENSE')]
     for name, license_file in dependencies:

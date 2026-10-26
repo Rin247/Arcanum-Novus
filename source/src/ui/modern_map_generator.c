@@ -154,7 +154,7 @@ static bool mapgen_fingerprint(const char* game, Uint64* hash)
     MapGenWalk root = {NULL, 0, false, true};
     if (!SDL_EnumerateDirectory(game, mapgen_walk, &root)) return false;
     *hash = root.hash;
-    const char* folders[] = {"data", "modules", "modern-ui/uap-fr/active", "modern-ui/uap-en/active"};
+    const char* folders[] = {"data", "modules", "Novus/uap-fr/active", "Novus/uap-en/active"};
     for (size_t i = 0; i < SDL_arraysize(folders); i++) {
         char* path = mapgen_join(game, folders[i]);
         MapGenWalk child = {NULL, 0, false, false, true};
@@ -189,7 +189,7 @@ static void mapgen_report(int stage)
 
 bool modern_maps_ready(void)
 {
-    char* text = SDL_LoadFile("modern-ui/local-maps/.generation-complete", NULL);
+    char* text = SDL_LoadFile("Novus/Maps/.generation-complete", NULL);
     unsigned long long source, cache;
     int version;
     bool valid = text && sscanf(text, "%d %llx %llx", &version, &source, &cache) == 3 && version == MAPGEN_VERSION;
@@ -197,7 +197,7 @@ bool modern_maps_ready(void)
     Uint64 current;
     if (!valid || !mapgen_fingerprint(".", &current) || current != source) return false;
     MapGenWalk files = {NULL, 0, false, false};
-    return SDL_EnumerateDirectory("modern-ui/local-maps", mapgen_walk, &files) && files.hash == cache;
+    return SDL_EnumerateDirectory("Novus/Maps", mapgen_walk, &files) && files.hash == cache;
 }
 
 char* modern_maps_executable(const char* argv0)
@@ -224,7 +224,7 @@ char* modern_maps_executable(const char* argv0)
 
 SDL_Process* modern_maps_start(const char* executable)
 {
-    if (!executable || !SDL_CreateDirectory("modern-ui/.map-work")) return NULL;
+    if (!executable || !SDL_CreateDirectory("Novus/.map-work")) return NULL;
     char* game = SDL_GetCurrentDirectory();
     const char* args[] = {executable, "--modern-generate-maps", game, NULL};
     SDL_PropertiesID properties = SDL_CreateProperties();
@@ -237,7 +237,7 @@ SDL_Process* modern_maps_start(const char* executable)
 
 void modern_maps_progress(ModernMapProgress* progress)
 {
-    char* text = SDL_LoadFile("modern-ui/.map-work/progress", NULL);
+    char* text = SDL_LoadFile("Novus/.map-work/progress", NULL);
     if (text) sscanf(text, "%llu %llu %d", &progress->done, &progress->total, &progress->stage);
     SDL_free(text);
 }
@@ -566,14 +566,14 @@ static int mapgen_run(const char* game_root, int tile_limit)
     if (!mapgen_fingerprint(game_root, &signature)) return 10;
     char stamp[80];
     SDL_snprintf(stamp, sizeof(stamp), "%d %llx\n", MAPGEN_VERSION, (unsigned long long)signature);
-    char* cache = mapgen_join(game_root, "modern-ui/local-maps");
+    char* cache = mapgen_join(game_root, "Novus/Maps");
     char sandbox_name[100];
-    SDL_snprintf(sandbox_name, sizeof(sandbox_name), "modern-ui/.map-work/sandbox-%llx", (unsigned long long)signature);
+    SDL_snprintf(sandbox_name, sizeof(sandbox_name), "Novus/.map-work/sandbox-%llx", (unsigned long long)signature);
     char* sandbox = mapgen_join(game_root, sandbox_name);
     if (!SDL_CreateDirectory(cache) || !SDL_CreateDirectory(sandbox)) return 11;
     MapGenWalk root = {sandbox, 0, true, true};
     if (!SDL_EnumerateDirectory(game_root, mapgen_walk, &root)) return 12;
-    const char* folders[] = {"data", "modules", "modern-ui/uap-fr/active", "modern-ui/uap-en/active"};
+    const char* folders[] = {"data", "modules", "Novus/uap-fr/active", "Novus/uap-en/active"};
     for (size_t i = 0; i < SDL_arraysize(folders); i++) {
         char* from = mapgen_join(game_root, folders[i]);
         char* to = mapgen_join(sandbox, folders[i]);
@@ -699,23 +699,23 @@ static int mapgen_run(const char* game_root, int tile_limit)
 int modern_maps_generate(const char* game_root, int tile_limit)
 {
     if (!mapgen_chdir(game_root)) return 2;
-    if (!SDL_CreateDirectory("modern-ui/.map-work")) return 3;
+    if (!SDL_CreateDirectory("Novus/.map-work")) return 3;
 #ifdef SDL_PLATFORM_WINDOWS
-    HANDLE lock = CreateFileW(L"modern-ui/.map-work/lock", GENERIC_READ | GENERIC_WRITE, 0,
+    HANDLE lock = CreateFileW(L"Novus/.map-work/lock", GENERIC_READ | GENERIC_WRITE, 0,
         NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (lock == INVALID_HANDLE_VALUE) return 4;
 #else
-    int lock = open("modern-ui/.map-work/lock", O_CREAT | O_RDWR, 0600);
+    int lock = open("Novus/.map-work/lock", O_CREAT | O_RDWR, 0600);
     if (lock < 0 || flock(lock, LOCK_EX | LOCK_NB)) {if (lock >= 0) close(lock); return 4;}
 #endif
     SDL_LogOutputFunction previous_log;
     void* previous_userdata;
     SDL_GetLogOutputFunction(&previous_log, &previous_userdata);
-    mapgen_log = SDL_IOFromFile("modern-ui/.map-work/generation.log", "wb");
+    mapgen_log = SDL_IOFromFile("Novus/.map-work/generation.log", "wb");
     SDL_SetLogOutputFunction(mapgen_log_output, NULL);
     SDL_SetLogPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
     SDL_Log("HD map preparation: %s", game_root);
-    mapgen_status_path = mapgen_join(game_root, "modern-ui/.map-work/progress");
+    mapgen_status_path = mapgen_join(game_root, "Novus/.map-work/progress");
     mapgen_report(0);
     int result = modern_maps_ready() ? 0 : mapgen_run(game_root, tile_limit);
     if (result) SDL_Log("HD map preparation stopped: code %d (%s)", result, SDL_GetError());

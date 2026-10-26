@@ -29,7 +29,7 @@ Allow about **8 GB** for Arcanum and Vormantown, plus temporary working space.
 Choose **Play now** to use the original maps; preparation resumes next launch.
 Completed maps are reused.
 
-If preparation fails, check `modern-ui/.map-work/generation.log` in the game
+If preparation fails, check `Novus/.map-work/generation.log` in the game
 folder. **Play now** remains available.
 
 ### Unofficial Arcanum Patch (UAP)
@@ -113,10 +113,10 @@ Paths are relative to the game folder.
 
 | Path | Contents |
 | --- | --- |
-| `modern-ui/settings.ini` | Interface and gameplay preferences |
-| `modern-ui/graphics.ini` | Display mode and resolution |
-| `modern-ui/keys.ini` | Key bindings and inventory middle-click preference |
-| `modern-ui/notebook-*.txt` | Favorites, tracked quests and map notes per character |
+| `Novus/settings.ini` | Interface and gameplay preferences |
+| `Novus/graphics.ini` | Display mode and resolution |
+| `Novus/keys.ini` | Key bindings and inventory middle-click preference |
+| `Novus/notebook-*.txt` | Favorites, tracked quests and map notes per character |
 | `arcanum.cfg` | Engine and game settings |
 | `modules/<module>/Save/` | Saved games |
 
@@ -171,7 +171,7 @@ no original game data in its standard packages.
   [original mod](https://www.nexusmods.com/arcanumofsteamworksandmagickobscura/mods/13),
   [source](https://github.com/SCARaw/Arcanum-Item-Description-Project),
   [MIT license](resources/aid/LICENSE.txt).
-- **Noto fonts**: [SIL Open Font License](game/modern-ui/FONT-LICENSE.txt).
+- **Noto fonts**: [SIL Open Font License](game/Novus/FONT-LICENSE.txt).
 - **FFmpeg**: LGPL 2.1 or later. Packages include its source, build script and
   license in `ArcanumModern/licenses/ffmpeg/`.
 

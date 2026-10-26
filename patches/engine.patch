@@ -2358,7 +2358,7 @@ diff --git a/src/game/gamelib.c b/src/game/gamelib.c
 +    char path[TIG_MAX_PATH];
 +    size_t length=strlen(name);
 +    if(length<4 || tig_video_renderer_get(&renderer)!=TIG_OK)return false;
-+    snprintf(path,sizeof(path),"modern-ui/splash/%.*s.png",(int)(length-4),name);
++    snprintf(path,sizeof(path),"Novus/splash/%.*s.png",(int)(length-4),name);
 +    SDL_strlwr(path);
 +    SDL_Surface* image=SDL_LoadPNG(path);
 +    if(!image)return false;
@@ -2594,7 +2594,7 @@ diff --git a/src/game/highres_config.c b/src/game/highres_config.c
      highres_config_reset();
  
 -    stream = fopen("HighRes/config.ini", "rt");
-+    stream = fopen("modern-ui/graphics.ini", "rt");
++    stream = fopen("Novus/graphics.ini", "rt");
      if (stream == NULL) {
          return;
      }
@@ -6192,7 +6192,7 @@ diff --git a/src/ui/slide_ui.c b/src/ui/slide_ui.c
 +    if (slide_ui_type != SLIDE_UI_TYPE_DEATH || slide != 0) return false;
 +    SDL_Renderer* renderer;
 +    if (tig_video_renderer_get(&renderer) != TIG_OK) return false;
-+    SDL_Surface* image = SDL_LoadPNG("modern-ui/death-background.png");
++    SDL_Surface* image = SDL_LoadPNG("Novus/death-background.png");
 +    if (!image) return false;
 +    slide_ui_death_width = image->w;
 +    slide_ui_death_height = image->h;

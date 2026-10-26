@@ -11,7 +11,7 @@ to import wholesale into Git. Never change the parent installation or its saves.
 Our modules are `source/src/ui/modern_ui.*` and `modern_graphics.*`.
 Changes to existing upstream engine files are represented by `patches/engine.patch`.
 `prepare-source.sh` restores the pinned upstream revision and applies that patch.
-`game/modern-ui/` contains the mod's fonts, background, and local preferences.
+`game/Novus/` contains the mod's fonts, background, and local preferences.
 
 ## Development and Verification
 

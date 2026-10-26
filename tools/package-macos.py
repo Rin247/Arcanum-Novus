@@ -44,7 +44,7 @@ def package(app, build_dir, output):
     binary = app/'Contents/MacOS'/executable
     validate_macho(binary.read_bytes())
     imports = validate_dependencies(subprocess.check_output(['otool', '-L', str(binary)], text=True))
-    # Reuse the release asset allowlist, never copy the installed modern-ui folder.
+    # Reuse the release asset allowlist, never copy the installed Novus folder.
     spec = importlib.util.spec_from_file_location('windows_package', ROOT/'tools/package-windows.py')
     resources = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(resources)
@@ -86,9 +86,9 @@ def package(app, build_dir, output):
         subprocess.run(['codesign', '--force', '--sign', '-', str(bundle)], check=True)
         subprocess.run(['codesign', '--verify', '--strict', '--deep', str(bundle)], check=True)
         for name in resources.ASSETS:
-            destination = stage/'modern-ui'/name
+            destination = stage/'Novus'/name
             destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(ROOT/'game/modern-ui'/name, destination)
+            shutil.copyfile(ROOT/'game/Novus'/name, destination)
         notices = stage/'ArcanumModern'
         licenses = notices/'licenses'
         licenses.mkdir(parents=True, exist_ok=True)
@@ -109,7 +109,7 @@ def package(app, build_dir, output):
         stb = (ROOT/'source/third_party/stb/stb_truetype.h').read_text()
         (licenses/'stb.txt').write_text(stb[stb.rindex('/*\n---'):])
         shutil.copyfile(ROOT/'tools/macos/INSTALL.txt', notices/'INSTALL.txt')
-        (notices/'README.md').write_text((ROOT/'README.md').read_text().replace('(resources/aid/LICENSE.txt)', '(licenses/aid.txt)').replace('(game/modern-ui/', '(../modern-ui/').replace('(docs/development.md', '(https://github.com/cdomergue/arcanum-modern/blob/main/docs/development.md').replace('(docs/screenshots/', '(https://raw.githubusercontent.com/cdomergue/arcanum-modern/main/docs/screenshots/'))
+        (notices/'README.md').write_text((ROOT/'README.md').read_text().replace('(resources/aid/LICENSE.txt)', '(licenses/aid.txt)').replace('(game/Novus/', '(../Novus/').replace('(docs/development.md', '(https://github.com/cdomergue/arcanum-modern/blob/main/docs/development.md').replace('(docs/screenshots/', '(https://raw.githubusercontent.com/cdomergue/arcanum-modern/main/docs/screenshots/'))
         git = ['git', '-c', f'safe.directory={ROOT}', '-C', str(ROOT)]
         manifest = {
             'target': 'macos-arm64', 'minimum_macos': '11.0', 'signature': 'ad-hoc',

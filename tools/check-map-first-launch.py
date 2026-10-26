@@ -43,16 +43,16 @@ for group in groups:
                 name for name in names if name.lower() in ('save', 'saves', 'players', 'tigcache', 'maps')])
         overlays = []
         for language in ('fr', 'en'):
-            relative = f'modern-ui/uap-{language}/active'
+            relative = f'Novus/uap-{language}/active'
             overlay = game/relative
             if (overlay/'ready').exists():
                 overlays.append(language)
                 shutil.copytree(overlay, root/relative, copy_function=lambda src, dst: copy_archive(Path(src), Path(dst)))
-        cache = root/'modern-ui/local-maps'
+        cache = root/'Novus/Maps'
         assert not cache.exists()
         for count in (1, 2):
             result = subprocess.run([str(engine), '--modern-generate-maps', str(root), '1'], timeout=300)
-            log = (root/'modern-ui/.map-work/generation.log').read_text(errors='replace')
+            log = (root/'Novus/.map-work/generation.log').read_text(errors='replace')
             assert result.returncode == 75, log[-4000:]
             for language in overlays:
                 assert f'uap-{language}/active/global/arcanum5.dat' in log

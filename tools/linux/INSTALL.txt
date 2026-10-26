@@ -1,7 +1,7 @@
 ARCANUM MODERN - LINUX x64
 
 Extract the entire ZIP into your own Arcanum 1.0.7.4 installation, beside
-arcanum1.dat. Keep the modern-ui directory. Use a writable game folder.
+arcanum1.dat. Keep the Novus directory. Use a writable game folder.
 Run ./"Play Arcanum Renaissance.sh" from a terminal, or launch the script through
 your file manager. If the archive tool discarded executable permissions, run:
 
@@ -31,7 +31,7 @@ X11 and disabled framebuffer acceleration are defaults; SDL_VIDEO_DRIVER and
 SDL_FRAMEBUFFER_ACCELERATION can override them. Use Options for game settings.
 
 This ZIP contains no game data, saves, generated maps or personal preferences.
-Close the game before extracting an update. Keep your existing modern-ui INI
+Close the game before extracting an update. Keep your existing Novus INI
 and notebook files and the modules/<module>/Save directory. Back up saves before
 trying an experimental engine. The original Arcanum executable is not replaced.
 

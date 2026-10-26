@@ -28,7 +28,7 @@
 
 ## Tasks
 
-- [x] Save the textless image as `game/modern-ui/main-menu.png`, allow it in `.gitignore`, and include it in the shared packaging asset list. Save the generation prompt in `tools/art/`.
+- [x] Save the textless image as `game/Novus/main-menu.png`, allow it in `.gitignore`, and include it in the shared packaging asset list. Save the generation prompt in `tools/art/`.
 - [x] In `modern_ui.c`, add texture lifetime handling, a dedicated book font, fitted plaque labels, and a main-menu renderer that reuses existing button actions. Use source-space plaque rectangles for drawing and hit registration.
 - [x] Verify rendering geometry and localized fitting, run existing menu/input checks, compile the native macOS target and test menu transitions in an isolated copy. Install the executable atomically in the repository-local app. Review the final diff.
 

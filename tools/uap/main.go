@@ -175,7 +175,7 @@ func detectEdition(game string, c catalog) (string, error) {
 
 func overlayVersion(language string) string { return "2.0.2-" + language + "-1" }
 func overlayReady(root, language string) bool {
-	b, err := os.ReadFile(filepath.Join(root, "modern-ui", "uap-"+language, "active", "ready"))
+	b, err := os.ReadFile(filepath.Join(root, "Novus", "uap-"+language, "active", "ready"))
 	return err == nil && string(b) == overlayVersion(language)+"\n"
 }
 
@@ -351,7 +351,7 @@ func run() int {
 		}
 		*language = edition
 	}
-	work = filepath.Join(root, "modern-ui", "uap-"+*language)
+	work = filepath.Join(root, "Novus", "uap-"+*language)
 	if *mode == "probe" {
 		if b, e := os.ReadFile(filepath.Join(work, "choice")); e == nil && string(b) == "no\n" {
 			return 0

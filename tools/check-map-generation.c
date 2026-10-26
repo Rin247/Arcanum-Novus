@@ -21,7 +21,7 @@ int main(int argc, char** argv)
     assert(SDL_SaveFile(loose, "edit", 4));
     assert(mapgen_fingerprint(argv[1], &after) && before != after);
     /* English overlays participate in cache invalidation just like French ones. */
-    char* english = mapgen_join(argv[1], "modern-ui/uap-en/active");
+    char* english = mapgen_join(argv[1], "Novus/uap-en/active");
     assert(SDL_CreateDirectory(english));
     char* ready = mapgen_join(english, "ready");
     before = after;

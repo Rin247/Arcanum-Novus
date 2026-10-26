@@ -78,7 +78,7 @@ func TestEditionDetection(t *testing.T) {
 func TestOverlayMarkers(t *testing.T) {
 	root := t.TempDir()
 	for _, lang := range []string{"fr", "en"} {
-		path := filepath.Join(root, "modern-ui", "uap-"+lang, "active", "ready")
+		path := filepath.Join(root, "Novus", "uap-"+lang, "active", "ready")
 		os.MkdirAll(filepath.Dir(path), 0700)
 		for _, marker := range []string{"", "partial", overlayVersion(lang), "2.0.2-unknown-1\n"} {
 			os.WriteFile(path, []byte(marker), 0600)

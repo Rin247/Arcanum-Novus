@@ -29,9 +29,9 @@ static const char* gamelib_current_module_name_get(void){return "Arcanum";}
 static TigFile* tig_file_fopen_repository(const char* repo,const char* path){(void)repo;(void)path;return NULL;}
 void modern_uap_module_unload(void);
 '''+source+r'''
-static void marker(const char* lang,const char* text){char path[260];snprintf(path,260,"modern-ui/uap-%s",lang);mkdir(path,0700);snprintf(path,260,"modern-ui/uap-%s/active",lang);mkdir(path,0700);snprintf(path,260,"modern-ui/uap-%s/active/ready",lang);FILE* f=fopen(path,"wb");assert(f);fputs(text,f);fclose(f);}
+static void marker(const char* lang,const char* text){char path[260];snprintf(path,260,"Novus/uap-%s",lang);mkdir(path,0700);snprintf(path,260,"Novus/uap-%s/active",lang);mkdir(path,0700);snprintf(path,260,"Novus/uap-%s/active/ready",lang);FILE* f=fopen(path,"wb");assert(f);fputs(text,f);fclose(f);}
 int main(void){
- mkdir("modern-ui",0700);assert(!modern_uap_ready());
+ mkdir("Novus",0700);assert(!modern_uap_ready());
  marker("en","partial");assert(!modern_uap_ready());
  for(int french=0;french<2;french++){
   const char* lang=french?"fr":"en";marker(lang,french?"2.0.2-fr-1\n":"2.0.2-en-1\n");
@@ -47,7 +47,7 @@ int main(void){
   added=removed=0;assert(modern_uap_module_load("Other"));assert(!added);
   added=removed=0;fail_at=1;assert(!modern_uap_module_load("Arcanum"));assert(removed==1&&!strcmp(paths[0],removed_paths[0]));fail_at=-1;
   added=removed=0;fail_at=french?7:6;assert(!modern_uap_load());assert(removed==fail_at);assert(!modern_uap_ready());disabled=false;fail_at=-1;
-  char path[260];snprintf(path,260,"modern-ui/uap-%s/active/ready",lang);unlink(path);
+  char path[260];snprintf(path,260,"Novus/uap-%s/active/ready",lang);unlink(path);
  }
  puts("PASS: FR/EN markers, external UAP precedence, language-specific files, module switching and failed-mount rollback");
 }

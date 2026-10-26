@@ -37,7 +37,7 @@ class SetupPayloadTests(unittest.TestCase):
         target = self.work/'payload'
         names = self.p.extract_payload(self.archive(), target)
         self.assertIn('arcanum-modern.exe', names)
-        self.assertEqual((target/'modern-ui/Book.ttf').read_bytes(), b'fixture')
+        self.assertEqual((target/'Novus/Book.ttf').read_bytes(), b'fixture')
         self.assertEqual(set(names), set(self.files) | {'ArcanumModern/manifest.json'})
 
     def test_refuses_full_package(self):
@@ -68,8 +68,8 @@ class SetupPayloadTests(unittest.TestCase):
             self.assertEqual((target/name).read_bytes(), b'uap fixture')
 
     def test_refuses_game_data_preferences_and_unsafe_paths(self):
-        for name in ['arcanum1.dat', 'modern-ui/settings.ini', 'modules/Arcanum.dat',
-                     '../escape', '/absolute', 'modern-ui\\Book.ttf',
+        for name in ['arcanum1.dat', 'Novus/settings.ini', 'modules/Arcanum.dat',
+                     '../escape', '/absolute', 'Novus\\Book.ttf',
                      'ArcanumModern/licenses/../../escape', 'ArcanumModern/licenses/$bad.txt']:
             with self.subTest(name=name):
                 self.files[name] = b'excluded'
@@ -84,7 +84,7 @@ class SetupPayloadTests(unittest.TestCase):
         self.assertFalse((self.work/'payload/arcanum-modern.exe').exists())
 
     def test_refuses_missing_assets(self):
-        del self.files['modern-ui/Book.ttf']
+        del self.files['Novus/Book.ttf']
         with self.assertRaisesRegex(ValueError, 'Missing'):
             self.p.extract_payload(self.archive(), self.work/'payload')
 

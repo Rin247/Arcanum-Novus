@@ -22,8 +22,8 @@ try {
     }
     $originals = @('arcanum1.dat', 'arcanum2.dat', 'arcanum3.dat', 'tig.dat',
         'modules/Arcanum.dat', 'Arcanum.exe', 'arcanum.cfg',
-        'modules/Arcanum/Save/Slot0001.tfaf', 'modern-ui/settings.ini',
-        'modern-ui/graphics.ini', 'modern-ui/notebook-test.txt')
+        'modules/Arcanum/Save/Slot0001.tfaf', 'Novus/settings.ini',
+        'Novus/graphics.ini', 'Novus/notebook-test.txt')
     $hashes = @{}
     foreach ($name in $originals) {
         $path = Join-Path $game $name

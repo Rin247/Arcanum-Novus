@@ -49,7 +49,7 @@ bool modern_ui_prepare_maps(const char* executable)
             ? "Preparation could not be completed."
             : "Maps are generated from your installed game files.", cx, cy - 88, GOLD);
         centered(0, failed
-            ? "Log: modern-ui/.map-work/generation.log"
+            ? "Log: Novus/.map-work/generation.log"
             : "This can take a while and use about 8 GB of disk space.", cx, cy - 50, MUTED);
         SDL_FRect track = {cx - 350, cy + 5, 700, 22};
         fill(track, (SDL_Color){7,6,4,255}); outline(track, MUTED);

@@ -175,14 +175,14 @@ void modern_graphics_confirm(void)
     ModernGraphics* g = &modern_graphics;
     if (!g->deadline) return;
     ModernDisplaySettings settings = current_settings();
-    FILE* file = fopen("modern-ui/graphics.ini.tmp", "w");
+    FILE* file = fopen("Novus/graphics.ini.tmp", "w");
     bool saved = false;
     if (file) {
         int written = fprintf(file, "Mode=%d\nWidth=%d\nHeight=%d\nRenderer=%s\n",
             settings.mode, settings.width, settings.height,
             modern_graphics.renderer[0] ? modern_graphics.renderer : "Auto");
         int closed = fclose(file);
-        saved = written > 0 && closed == 0 && SDL_RenamePath("modern-ui/graphics.ini.tmp", "modern-ui/graphics.ini");
+        saved = written > 0 && closed == 0 && SDL_RenamePath("Novus/graphics.ini.tmp", "Novus/graphics.ini");
     }
     g->deadline = 0;
     modern_graphics_begin();

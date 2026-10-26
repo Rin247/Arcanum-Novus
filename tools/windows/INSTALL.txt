@@ -14,7 +14,7 @@ The modern interface and turn-based combat are enabled by default. The world
 uses an independent rendering resolution; the interface stays sharp when zooming.
 
 To update, close the game, then extract a newer ZIP into the same folder.
-The package does not replace your modern-ui settings or notebook files.
+The package does not replace your Novus settings or notebook files.
 Back up saves before trying a different engine version. This version remains
 experimental; multiplayer and compatibility with other binary patches are untested.
 Bink cinematics require a compatible decoder; the original 32-bit binkw32.dll

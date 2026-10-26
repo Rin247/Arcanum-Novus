@@ -14,7 +14,7 @@ The original Windows executable and the UAP interface are not installed.
 
 **No** keeps the game without this UAP adaptation and remembers your answer.
 To display the offer again, close the game and delete
-`modern-ui/uap-fr/choice` inside the game folder.
+`Novus/uap-fr/choice` inside the game folder.
 
 Automatic preparation is available on Windows 10 or later, Linux x64, and
 Apple Silicon Macs with macOS 13 or later. The game itself can run without the
@@ -38,8 +38,8 @@ fails, the UAP overlay is not activated. Each ZIP contains a checksum manifest
 and restoration instructions.
 
 Original game archives remain unchanged. The UAP data lives in
-`modern-ui/uap-fr/active`. Incomplete preparation stays inactive.
-The preparation log is `modern-ui/uap-fr/preparation.log`.
+`Novus/uap-fr/active`. Incomplete preparation stays inactive.
+The preparation log is `Novus/uap-fr/preparation.log`.
 
 To return to the original data, close the game and rename the `active` folder.
 Keep newer saves separately before restoring files from the backup to their

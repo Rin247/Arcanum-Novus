@@ -38,10 +38,10 @@ static const char* key_name(int i)
 }
 static void key_save(void)
 {
-    FILE* f=fopen("modern-ui/keys.ini.tmp","w");if(!f)return;
+    FILE* f=fopen("Novus/keys.ini.tmp","w");if(!f)return;
     for(int i=0;i<KB_COUNT;i++)fprintf(f,"%d=%d\n",i,key_binding[i]);
     fprintf(f,"inventory_middle_sort=%d\n",inventory_middle_sort?1:0);
-    if(fclose(f)==0)SDL_RenamePath("modern-ui/keys.ini.tmp","modern-ui/keys.ini");
+    if(fclose(f)==0)SDL_RenamePath("Novus/keys.ini.tmp","Novus/keys.ini");
 }
 static bool key_allowed(int key)
 {
@@ -52,7 +52,7 @@ static bool key_allowed(int key)
 static void key_load(void)
 {
     memcpy(key_binding,key_defaults,sizeof(key_binding));inventory_middle_sort=true;
-    FILE* f=fopen("modern-ui/keys.ini","r");if(!f)return;
+    FILE* f=fopen("Novus/keys.ini","r");if(!f)return;
     int next[KB_COUNT];memcpy(next,key_defaults,sizeof(next));int i,k;
     char line[128];
     while(fgets(line,sizeof(line),f)) {

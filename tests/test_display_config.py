@@ -29,14 +29,14 @@ static bool modern_world_resize(int w,int h,float x,float y){
 }
 ''' + source[start:end] + r'''
 int main(void){
-    FILE* f=fopen("modern-ui/graphics.ini","w");
+    FILE* f=fopen("Novus/graphics.ini","w");
     fputs("Mode=0\nWidth=1728\nHeight=1084\n",f);fclose(f);
     highres_config_load();
     const HighResConfig* c=highres_config_get();
     assert(c->loaded && c->width==1728 && c->height==1084 && c->windowed);
     f=fopen("HighRes/config.ini","w");fputs("Width=800\nHeight=600\n",f);fclose(f);
     highres_config_load();assert(c->width==1728 && c->height==1084);
-    remove("modern-ui/graphics.ini");highres_config_load();assert(!c->loaded);
+    remove("Novus/graphics.ini");highres_config_load();assert(!c->loaded);
     world_zoom_sync();assert(actual_w==1728 && actual_h==1084);
     world_zoom_sync();assert(calls==1);
     world_zoom=.8f;world_zoom_sync();assert(actual_w==2160 && actual_h==1355);
@@ -51,7 +51,7 @@ int main(void){
 '''
 with tempfile.TemporaryDirectory(prefix='arcanum-display-') as directory:
     work = Path(directory)
-    (work / 'modern-ui').mkdir()
+    (work / 'Novus').mkdir()
     (work / 'HighRes').mkdir()
     (work / 'SDL3').mkdir()
     (work / 'SDL3/SDL_stdinc.h').write_text('#include <strings.h>\n#define SDL_strcasecmp strcasecmp\n')

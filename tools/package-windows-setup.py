@@ -23,7 +23,7 @@ REQUIRED_FILES = {'arcanum-modern.exe', 'Play Arcanum Renaissance.bat',
                   'ArcanumModern/licenses/SDL3.txt', 'ArcanumModern/licenses/SDL3_mixer.txt',
                   'ArcanumModern/licenses/SDL3-hidapi.txt', 'ArcanumModern/licenses/SDL3_mixer-dr_libs.txt',
                   'ArcanumModern/licenses/fpattern.txt', 'ArcanumModern/licenses/zlib.txt',
-                  'ArcanumModern/licenses/stb.txt'} | {'modern-ui/'+name for name in package.ASSETS} | set(package.MOVIE_LIBRARIES['windows']) | {
+                  'ArcanumModern/licenses/stb.txt'} | {'Novus/'+name for name in package.ASSETS} | set(package.MOVIE_LIBRARIES['windows']) | {
                   'ArcanumModern/licenses/ffmpeg/'+name for name in
                   ('ffmpeg-8.1.3.tar.xz', 'COPYING.LGPLv2.1', 'build-ffmpeg.py', 'README.txt')} | {
                   'ArcanumModern/'+name for name in (

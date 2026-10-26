@@ -5,8 +5,8 @@
 #include <sys/sysctl.h>
 #endif
 
-#define UAP_WORK_FR "modern-ui/uap-fr/"
-#define UAP_WORK_EN "modern-ui/uap-en/"
+#define UAP_WORK_FR "Novus/uap-fr/"
+#define UAP_WORK_EN "Novus/uap-en/"
 #ifdef SDL_PLATFORM_WINDOWS
 #define UAP_HELPER "ArcanumModern/uap/uap-helper.exe"
 #else
@@ -148,9 +148,9 @@ bool modern_uap_startup(void)
     if (result != 0) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Arcanum Renaissance — UAP",
             french ? "La préparation de l'UAP n'a pas abouti. Aucun patch partiel n'est activé.\n\n"
-            "Journal : modern-ui/uap-fr/preparation.log\n\nLe jeu continue sans cette installation UAP." :
+            "Journal : Novus/uap-fr/preparation.log\n\nLe jeu continue sans cette installation UAP." :
             "UAP preparation did not finish. No partial patch is activated.\n\n"
-            "Log: modern-ui/uap-en/preparation.log\n\nThe game continues without this UAP installation.", window);
+            "Log: Novus/uap-en/preparation.log\n\nThe game continues without this UAP installation.", window);
     }
     return true;
 }

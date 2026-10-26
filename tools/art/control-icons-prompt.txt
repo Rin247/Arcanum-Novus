@@ -1,4 +1,4 @@
-Asset: game/modern-ui/control-icons.png
+Asset: game/Novus/control-icons.png
 Generation: built-in ImageGen, transparent_background=true.
 
 Production sprite atlas for the Arcanum Renaissance PC RPG interface.

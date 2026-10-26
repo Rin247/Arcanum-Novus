@@ -44,7 +44,7 @@ packages from the source; see [Windows setup](#create-a-windows-setup) and
 Copy the contents of your installed Arcanum game into the repository's `game/`
 folder. Keep the original directory structure, including all game archives,
 module patches and loose data files. The repository already supplies
-`game/modern-ui/`; keep those resources in place.
+`game/Novus/`; keep those resources in place.
 
 After adding your own game files, the layout should look like this. The game
 archives and module data shown below are not supplied by the repository:
@@ -68,11 +68,11 @@ ArcanumModern/
     │   ├── Arcanum.patch0           # Keep all installed module patches
     │   ├── Arcanum/                 # Loose module data and saved games
     │   └── ...                     # Other installed modules
-    └── modern-ui/                  # Resources supplied by this project
+    └── Novus/                  # Resources supplied by this project
         ├── Book.ttf
         ├── Heading.ttf
         ├── ...
-        └── local-maps/              # HD cache generated on first launch
+        └── Maps/              # HD cache generated on first launch
 ```
 
 Use a writable folder so the game can create preferences, caches and saves.
@@ -81,7 +81,7 @@ before using a different engine.
 
 After generating a package, the same layout applies without the source files:
 `arcanum-modern.exe` and its launcher on Windows, or `Arcanum Modern.app` on macOS,
-must sit **beside `arcanum1.dat` and `modern-ui/`**. On macOS, the game data stays
+must sit **beside `arcanum1.dat` and `Novus/`**. On macOS, the game data stays
 outside the `.app` bundle; keep the application in the game folder.
 
 ### Linux
@@ -295,7 +295,7 @@ docker run --rm \
 
 This creates **`dist/ArcanumModern-windows-x64-full.zip`** with the game's language
 files, installed module patches, loose data and any detailed maps present in
-`game/modern-ui/local-maps/`. A map-cache symlink is packaged as actual files.
+`game/Novus/Maps/`. A map-cache symlink is packaged as actual files.
 Generating and including a complete map collection can add several gigabytes.
 
 Saved games, player files, notes, personal preferences, screenshots, temporary
@@ -349,7 +349,7 @@ fog remains active. Door images reflect the initial map state.
 Place the cache's module directories under:
 
 ```text
-game/modern-ui/local-maps/
+game/Novus/Maps/
 ├── Arcanum/
 │   ├── manifest.json
 │   └── ...
@@ -357,7 +357,7 @@ game/modern-ui/local-maps/
 ```
 
 Normal launches prepare this cache automatically using the engine itself. The
-worker runs in an isolated folder under `modern-ui/.map-work/`, leaving saves
+worker runs in an isolated folder under `Novus/.map-work/`, leaving saves
 out of the rendering process. Missing or damaged tiles are repaired; changes to
 the source assets trigger regeneration. Finished maps become usable individually.
 If preparation fails or is skipped, incomplete maps use the original artwork.
@@ -372,10 +372,10 @@ folder path (the same option is available in all three builds):
 
 On Windows the executable is `arcanum-modern.exe`; on macOS use the executable
 inside the app's `Contents/MacOS/` directory. For diagnostics, progress is recorded
-in `modern-ui/.map-work/progress`. The optional Python validator can check a cache:
+in `Novus/.map-work/progress`. The optional Python validator can check a cache:
 
 ```sh
-python3 tools/verify-map-cache.py /absolute/path/to/Arcanum/modern-ui/local-maps
+python3 tools/verify-map-cache.py /absolute/path/to/Arcanum/Novus/Maps
 ```
 
 The macOS developer exporter is available through

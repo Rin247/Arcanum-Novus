@@ -6,8 +6,8 @@ if not exist "arcanum1.dat" (
   pause
   exit /b 1
 )
-if not exist "modern-ui\Book.ttf" (
-  echo The modern-ui folder is missing. Extract the complete ZIP first.
+if not exist "Novus\Book.ttf" (
+  echo The Novus folder is missing. Extract the complete ZIP first.
   pause
   exit /b 1
 )

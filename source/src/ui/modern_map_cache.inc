@@ -25,7 +25,7 @@ static void map_cache_clear(void)
 static bool map_cache_prepare(const ModernMap* map)
 {
     char folder[1024];
-    snprintf(folder,sizeof(folder),"modern-ui/local-maps/%s/%d",
+    snprintf(folder,sizeof(folder),"Novus/Maps/%s/%d",
         gamelib_current_module_name_get(),map->townmap);
     if(map_cache_id==map->townmap && !strcmp(folder,map_cache_folder))return map_cache_available;
     map_cache_clear();

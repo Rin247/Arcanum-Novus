@@ -49,7 +49,7 @@ def package(exe, build_dir, output):
     files = {'arcanum-modern': binary,
              'Play Arcanum Renaissance.sh': (ROOT/'tools/linux/Play Arcanum Renaissance.sh').read_bytes(),
              'ArcanumModern/INSTALL.txt': (ROOT/'tools/linux/INSTALL.txt').read_bytes(),
-             'ArcanumModern/README.md': (ROOT/'README.md').read_text().replace('(resources/aid/LICENSE.txt)', '(licenses/aid.txt)').replace('(game/modern-ui/', '(../modern-ui/').replace('(docs/development.md', '(https://github.com/cdomergue/arcanum-modern/blob/main/docs/development.md').replace('(docs/screenshots/', '(https://raw.githubusercontent.com/cdomergue/arcanum-modern/main/docs/screenshots/').encode(),
+             'ArcanumModern/README.md': (ROOT/'README.md').read_text().replace('(resources/aid/LICENSE.txt)', '(licenses/aid.txt)').replace('(game/Novus/', '(../Novus/').replace('(docs/development.md', '(https://github.com/cdomergue/arcanum-modern/blob/main/docs/development.md').replace('(docs/screenshots/', '(https://raw.githubusercontent.com/cdomergue/arcanum-modern/main/docs/screenshots/').encode(),
              'ArcanumModern/licenses/arcanum-ce.md': (ROOT/'source/LICENSE.md').read_bytes(),
              'ArcanumModern/licenses/aid.txt': (ROOT/'resources/aid/LICENSE.txt').read_bytes()}
     movies = resources.movie_files(build_dir, 'linux')
@@ -66,7 +66,7 @@ def package(exe, build_dir, output):
     files.update(movies)
     files.update(resources.uap_files('linux'))
     for name in resources.ASSETS:
-        files['modern-ui/'+name] = (ROOT/'game/modern-ui'/name).read_bytes()
+        files['Novus/'+name] = (ROOT/'game/Novus'/name).read_bytes()
     cache = (build_dir/'CMakeCache.txt').read_text()
     for name, license_file in [('SDL3', 'LICENSE.txt'), ('SDL3_mixer', 'LICENSE.txt'),
                                ('fpattern', 'LICENSE'), ('zlib', 'LICENSE')]:
