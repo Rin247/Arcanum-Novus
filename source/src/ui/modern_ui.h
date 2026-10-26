@@ -1,0 +1,167 @@
+#ifndef ARCANUM_UI_MODERN_UI_H_
+#define ARCANUM_UI_MODERN_UI_H_
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <SDL3/SDL_render.h>
+
+typedef struct ModernDetails {
+    int count;
+    int icon;
+    int portrait;
+    char title[2000];
+    int bar_count;
+    int bar_lines[2];
+    int bar_kinds[2];
+    float bar_values[2];
+    int extra_count;
+    int extra_icons[4];
+    char lines[20][2000];
+} ModernDetails;
+typedef struct ModernCombatPreview {
+    int64_t actor, target, location;
+    int kind, cost, step_cost, chance, radius, count, range, fatigue_cost;
+    bool reachable, affordable, fatigue, blocked, in_range, resources;
+    int64_t path[201];
+} ModernCombatPreview;
+bool modern_combat_preview(ModernCombatPreview* preview);
+void modern_combat_sync(void);
+bool modern_combat_input_blocked(void);
+void modern_combat_log(int64_t object, const char* text);
+void modern_combat_event(int64_t attacker,int64_t target,const char* raw);
+void modern_combat_feedback(int64_t attacker,int64_t target,const char* raw);
+void modern_combat_rejected(int64_t actor,int64_t target,int reason,int required);
+int modern_spell_selected(void);
+bool modern_spell_resources(int64_t actor, int spell, int* fatigue_cost);
+int modern_maintained_spells(int64_t actor, int* ids, int* spells, int capacity);
+bool modern_spell_stop(int64_t actor, int id);
+
+bool modern_ui_init(void);
+bool modern_ui_prepare_maps(const char* executable);
+SDL_Texture* modern_ui_loading_label(SDL_Renderer* target,const char* text,float size);
+void modern_ui_exit(void);
+bool modern_ui_enabled(void);
+bool modern_ui_open_selector(bool spells);
+const char* modern_written_text(void);
+void modern_written_sync(bool enabled);
+bool modern_written_is_book(void);
+int modern_written_kind(void);
+int modern_written_paragraph_count(void);
+const char* modern_written_heading(int index);
+const char* modern_written_book_paragraph(int index,bool* centered,int* font);
+bool modern_camera_key(int scancode);
+bool modern_hotkey_assign(int index,int type,int data,int64_t item_obj);
+bool modern_world_resize(int width,int height,float anchor_x,float anchor_y);
+void modern_ui_tick(void);
+void modern_ui_menu_tick(void);
+bool modern_ui_menu_suspend(bool suspend);
+bool modern_ui_confirm(const char* message);
+void modern_mainmenu_activate(int button_index);
+/* Strings returned by the engine adapters retain the game's encoding. */
+typedef struct ModernCharacter {
+    int64_t object;
+    int portrait, index, count, description_kind;
+    bool editable, gender_editable;
+    char name[64];
+    const char *gender, *race, *background, *description;
+} ModernCharacter;
+bool modern_mainmenu_character(ModernCharacter* character, int description);
+void modern_mainmenu_gender(int direction);
+void modern_mainmenu_name(const char* name);
+const char* modern_mainmenu_save_name(int index);
+void modern_mainmenu_save_select(int index);
+const char* modern_mainmenu_save_description(void);
+void modern_mainmenu_save_description_set(const char* name);
+struct GameSaveInfo;
+const struct GameSaveInfo* modern_mainmenu_save_info(void);
+const char* modern_mainmenu_save_location(void);
+const char* modern_charedit_text(int number);
+void modern_charedit_adjust(int category, int index, int direction);
+void modern_ui_journal_open(void);
+void modern_ui_journal_close(void);
+void modern_ui_message(const char* text);
+
+/* Read-only adapter over the original journal's localization and game data. */
+int modern_logbook_select(int tab);
+int modern_logbook_id(int index);
+int modern_logbook_entry(int index, char* text, size_t capacity);
+const char* modern_logbook_state_label(int state);
+const char* modern_logbook_tab_label(int tab);
+bool modern_examine_begin(int64_t pc,int64_t object);
+void modern_examine_end(void);
+void modern_inventory_details(int64_t pc,int64_t object,int kind,ModernDetails* details);
+const ModernDetails* modern_hover_details(void);
+void modern_map_pan(int dx,int dy);
+int modern_fate_count(void);
+const char* modern_fate_text(int index);
+bool modern_fate_active(int index);
+void modern_fate_choose(int index);
+void modern_fate_sync(bool native);
+typedef struct ModernBubble {
+    const char* text;
+    int type,x,y,width,height;
+} ModernBubble;
+int modern_bubbles(ModernBubble* bubbles,int capacity);
+void modern_bubbles_sync(bool native);
+typedef struct ModernOption {
+    const char *label,*text;
+    int value,maximum;
+    bool enabled,numeric;
+} ModernOption;
+bool modern_cyclic_state(int id,ModernOption* option);
+void modern_cyclic_adjust(int id,int direction);
+bool modern_options_state(int index,ModernOption* option);
+void modern_options_adjust(int index,int direction);
+bool modern_options_select(int tab);
+void modern_options_return(void);
+
+/* Live panel adapters. Mouse coordinates are in the original 800x600 canvas;
+ * the presentation maps its own layout to these engine-owned controls. */
+struct DialogState;
+const struct DialogState* modern_dialog_state(void);
+void modern_dialog_choose(int index);
+int64_t modern_dialog_actor(void);
+bool modern_dialog_anchor(int* x,int* y);
+int64_t modern_charedit_object(void);
+bool modern_charedit_editable(void);
+typedef struct ModernInventory {
+    int mode, scroll, rows;
+    int64_t pc, target, owner;
+    bool paperdoll, target_paperdoll, drop, use, gamble, transfer_all;
+    int drop_x, drop_y, use_x, use_y, gamble_x, gamble_y;
+    const char* feedback;
+} ModernInventory;
+bool modern_inventory_state(ModernInventory* state);
+int64_t modern_inventory_at(int x,int y);
+void modern_inventory_mouse(int x,int y,int event);
+void modern_inventory_action(int action);
+void modern_inventory_scroll(int direction);
+const char* modern_inventory_text(int number);
+typedef struct ModernMap {
+    int mode, x, y, width, height, offset_x, offset_y, map;
+    int townmap, origin_x, origin_y;
+    void* buffer;
+    bool moving;
+} ModernMap;
+bool modern_map_state(ModernMap* state);
+void modern_map_hd_enable(bool enabled);
+void modern_map_mouse(int x,int y,int event);
+void modern_map_action(int action);
+const char* modern_map_text(int number);
+void modern_quantity_state(int* value,int* maximum);
+void modern_quantity_action(int value,bool accept);
+
+void modern_sleep_sync(bool native);
+int modern_sleep_count(void);
+const char* modern_sleep_text(int option);
+void modern_sleep_choose(int option);
+typedef struct ModernSchematic {
+    int tech,page,count,id,art,view,readiness;
+    const char *name,*description;
+    int64_t component1,component2;
+} ModernSchematic;
+bool modern_schematic_state(ModernSchematic* state);
+void modern_schematic_action(int action);
+const char* modern_schematic_text(int number);
+#endif

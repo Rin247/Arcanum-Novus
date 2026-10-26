@@ -1,0 +1,210 @@
+name: Release packages
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build git python3 binutils unzip \
+            libx11-dev libxext-dev libxrandr-dev libxi-dev libxinerama-dev libxcursor-dev \
+            libasound2-dev libpulse-dev libxss-dev libxtst-dev libxfixes-dev libxkbcommon-dev libudev-dev
+      - name: Check tactical camera and input handling
+        run: |
+          bash ./prepare-source.sh
+          python3 tests/test_tactical_camera.py
+          python3 tests/test_keyboard_capture.py
+          python3 tests/test_combat_binding.py
+          python3 tests/test_combat_exit.py
+          python3 tests/test_map_route.py
+          python3 tests/test_camera_keys.py
+          python3 tests/test_qol_preferences.py
+          python3 tests/test_tactical_combat.py
+          python3 tests/test_shared_turns.py
+          python3 tests/test_party_combat.py
+          python3 tests/test_hotkey_assignment.py
+          python3 tests/test_party_hotkeys.py
+          python3 tests/test_inventory_transfer_all.py
+          python3 tests/test_combat_music.py
+          python3 tests/test_hud_messages.py
+          python3 tests/test_party_grouping.py
+          python3 tests/test_party_transitions.py
+          python3 tests/test_uap_compat.py
+          python3 tests/test_module_repositories.py
+          python3 tests/test_ui_localization.py
+          python3 tests/test_autosave.py
+          python3 tests/test_save_rename.py
+          python3 tests/test_map_camera.py
+          python3 tests/test_map_cache_residency.py
+          python3 tests/test_map_fog.py
+          python3 tests/test_map_local_input.py
+          python3 tests/test_map_travel.py
+          python3 tests/test_combat_feedback.py
+      - name: Build and package Linux x64
+        env:
+          ARCANUM_BUILD_DIR: build/linux-x64
+        run: |
+          python3 tests/test_linux_package.py
+          ./build.sh
+          cmake --build build/linux-x64 --target check-name-input
+          build/linux-x64/check-name-input
+          python3 tools/package-linux.py --exe build/linux-x64/arcanum-ce --build-dir build/linux-x64
+          python3 tests/test_linux_package.py dist/ArcanumModern-linux-x64.zip
+      - name: Check extracted runtime
+        run: |
+          mkdir "$RUNNER_TEMP/linux-package"
+          unzip -q dist/ArcanumModern-linux-x64.zip -d "$RUNNER_TEMP/linux-package"
+          cd "$RUNNER_TEMP/linux-package"
+          test -x arcanum-modern
+          test -x "Play Arcanum Renaissance.sh"
+          ldd ./arcanum-modern > dependencies.txt
+          cat dependencies.txt
+          if grep -q 'not found' dependencies.txt; then exit 1; fi
+          ./arcanum-modern --check-movies
+          if ./"Play Arcanum Renaissance.sh" 2> missing-game.txt; then exit 1; fi
+          grep -q arcanum1.dat missing-game.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-release
+          path: dist/ArcanumModern-linux-x64.zip
+          if-no-files-found: error
+
+  windows:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test package boundaries
+        run: |
+          python3 tests/test_windows_full_package.py
+          python3 tests/test_windows_setup.py
+      - name: Build Windows ZIP
+        run: |
+          docker run --rm \
+            --mount "type=bind,source=$PWD,target=/work" --workdir /work \
+            -e LLVM_MINGW=/opt/llvm-mingw \
+            mstorsjo/llvm-mingw:latest bash ./build-windows.sh
+          docker run --rm \
+            --mount "type=bind,source=$PWD,target=/work" --workdir /work \
+            -e LLVM_MINGW=/opt/llvm-mingw \
+            mstorsjo/llvm-mingw:latest cmake --build build/windows-x64 --target check-utf8-files check-name-input
+      - name: Build setup and verify ZIP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nsis
+          sudo chown -R "$(id -u):$(id -g)" dist
+          python3 tests/test_windows_package.py
+          python3 tools/package-windows-setup.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-checks
+          path: |
+            build/windows-x64/check-utf8-files.exe
+            build/windows-x64/check-name-input.exe
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: |
+            dist/ArcanumModern-windows-x64.zip
+            dist/ArcanumModern-windows-x64-setup.exe
+          if-no-files-found: error
+
+  windows-install:
+    needs: windows
+    runs-on: windows-2022
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+          path: dist
+      - name: Test installation and removal on Windows
+        shell: pwsh
+        run: ./tests/test-windows-setup.ps1 -Setup ./dist/ArcanumModern-windows-x64-setup.exe
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-checks
+          path: checks
+      - name: Test accented Windows paths
+        shell: pwsh
+        run: |
+          ./checks/check-utf8-files.exe "$env:RUNNER_TEMP/Arcanum paths"
+          if ($LASTEXITCODE -ne 0) { throw "UTF-8 file test failed: $LASTEXITCODE" }
+      - name: Test character and save names on Windows
+        shell: pwsh
+        run: |
+          ./checks/check-name-input.exe
+          if ($LASTEXITCODE -ne 0) { throw "Name input test failed: $LASTEXITCODE" }
+      - name: Check packaged movie decoder on Windows
+        shell: pwsh
+        run: |
+          Expand-Archive ./dist/ArcanumModern-windows-x64.zip "$env:RUNNER_TEMP/movie-runtime"
+          $process = Start-Process "$env:RUNNER_TEMP/movie-runtime/arcanum-modern.exe" -ArgumentList '--check-movies' -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Movie decoder runtime failed: $($process.ExitCode)" }
+
+  macos:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash ./build-macos.sh
+      - name: Test character and save names
+        run: |
+          cmake --build build/macos-arm64 --target check-name-input
+          build/macos-arm64/check-name-input
+      - name: Check native map preparation
+        run: |
+          python3 tools/build-map-exporter.py --source tools/check-map-generation.c --name check-map-generation --exclude-object src/ui/modern_map_generator.c.o
+          build/macos-arm64/check-map-generation "$(mktemp -d)"
+          python3 tools/build-map-exporter.py --source tools/check-cursor-scale.c --name check-cursor-scale
+          build/macos-arm64/check-cursor-scale
+      - run: python3 tests/test_macos_package.py
+      - name: Check packaged movie decoder on macOS
+        run: |
+          ditto -x -k dist/ArcanumModern-macos-arm64.zip "$RUNNER_TEMP/movie-runtime"
+          "$RUNNER_TEMP/movie-runtime/Arcanum Modern.app/Contents/MacOS/Arcanum Community Edition" --check-movies
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: dist/ArcanumModern-macos-arm64.zip
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows-install, macos, linux]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*-release'
+          path: dist
+          merge-multiple: true
+      - name: Create or update the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          cd dist
+          files=(ArcanumModern-windows-x64.zip ArcanumModern-windows-x64-setup.exe ArcanumModern-macos-arm64.zip ArcanumModern-linux-x64.zip)
+          sha256sum "${files[@]}" > SHA256SUMS.txt
+          if gh release view "$RELEASE_TAG" --json isDraft > release.json; then
+            test "$(jq -r .isDraft release.json)" = true || { echo 'Refusing to replace a published release.' >&2; exit 1; }
+            gh release upload "$RELEASE_TAG" "${files[@]}" SHA256SUMS.txt --clobber
+          else
+            gh release create "$RELEASE_TAG" "${files[@]}" SHA256SUMS.txt \
+              --verify-tag --draft --title "Arcanum Renaissance $RELEASE_TAG" --generate-notes
+          fi
