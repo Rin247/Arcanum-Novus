@@ -71,6 +71,8 @@ def build(args):
         raise FileNotFoundError('make executable not found')
     subprocess.run([make, '-j'+str(min(os.cpu_count() or 2, 8))], cwd=output, check=True)
     subprocess.run([make, 'install'], cwd=output, check=True)
+    for lib in (prefix/'bin').glob('*.lib'):
+        shutil.copyfile(lib, prefix/'lib'/lib.name)
     notices = prefix/'share/arcanum-ffmpeg'
     notices.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(archive, notices/archive.name)
