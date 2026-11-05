@@ -1,5 +1,5 @@
 # Repository Guidelines
-> First boot: read `Bible/HANDOVER.md` and `Bible/WANTED.md` before doing anything.
+> First boot: read `Bible/HANDOVER.md` and `Bible/WANTED.md`; keep both lean - drop verified items (git is the history).
 
 ## Scope
 
