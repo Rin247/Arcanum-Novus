@@ -71,3 +71,5 @@ Agents decide and continue; they do not ask for decisions already inferable from
 Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No stray files in module or project roots. Agents clean up misplaced files they create in the same pass.
 
 > Dirty working trees are treated as non-dirty: commit and push them (use --no-verify if comment-bloat hooks block), and note any deferred comment cleanup in HANDOVER.md.
+
+> Kotlin versioning: JDK 27 pairs with Kotlin 2.4.21; keep Kotlin and JDK aligned (AGENTS.md s33).
