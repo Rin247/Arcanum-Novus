@@ -85,3 +85,7 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 > `WANTED.md` and `HANDOVER.md` must never be deleted; only their contents are cleaned as work progresses.
 
 > Tests live in `C:/Projects/PROJECT/tests/` and run from there; clean up stale artifacts so the tree stays tidy.
+
+> Every app gets a Material 3 icon from the single generator in `AssetLibrary/Icons`.
+
+> Zoom is swept as a control, never as an axis.
