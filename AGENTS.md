@@ -75,3 +75,5 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 > Kotlin versioning: JDK 27 pairs with Kotlin 2.4.21; keep Kotlin and JDK aligned (AGENTS.md s33).
 
 > Android SDK floor: minSdk = 33 (Android 13), targetSdk = 37 (Android 17) for all native Android projects.
+
+> QML (and other) files must be refactored of comment bloat; agents waste compute reading comments before touching code.
