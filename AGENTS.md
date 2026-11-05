@@ -89,3 +89,5 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 > Every app gets a Material 3 icon from the single generator in `AssetLibrary/Icons`.
 
 > Zoom is swept as a control, never as an axis.
+
+> Agents must make a to-do list as they work (audit -> to-do list -> commit to it), not work blindly.
