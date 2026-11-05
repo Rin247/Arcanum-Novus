@@ -73,3 +73,5 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 > Dirty working trees are treated as non-dirty: commit and push them (use --no-verify if comment-bloat hooks block), and note any deferred comment cleanup in HANDOVER.md.
 
 > Kotlin versioning: JDK 27 pairs with Kotlin 2.4.21; keep Kotlin and JDK aligned (AGENTS.md s33).
+
+> Android SDK floor: minSdk = 33, targetSdk = 37 for all native Android projects.
