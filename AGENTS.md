@@ -81,3 +81,5 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 > `Bible/` holds per-module documentation and quirks.
 
 > Hard rule: no comment bloat or documentation in code files; put it in `Bible/`, and check `Bible/` for reference before editing.
+
+> `WANTED.md` and `HANDOVER.md` must never be deleted; only their contents are cleaned as work progresses.
