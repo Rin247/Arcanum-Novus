@@ -77,3 +77,5 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 > Android SDK floor: minSdk = 33 (Android 13), targetSdk = 37 (Android 17) for all native Android projects.
 
 > QML (and other) files must be refactored of comment bloat; agents waste compute reading comments before touching code.
+
+> `Bible/` holds per-module stories and documentation.
