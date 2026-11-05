@@ -78,4 +78,4 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 
 > QML (and other) files must be refactored of comment bloat; agents waste compute reading comments before touching code.
 
-> `Bible/` holds per-module stories, documentation, and quirks.
+> `Bible/` holds per-module documentation and quirks.
