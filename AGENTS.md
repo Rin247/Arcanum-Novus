@@ -84,4 +84,4 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 
 > `WANTED.md` and `HANDOVER.md` must never be deleted; only their contents are cleaned as work progresses.
 
-> Logs go under `build/<Config>/logs/` (e.g. `build/Release/logs/`); a top-level `build/logs/` is redundant.
+> Tests live in `C:/Projects/PROJECT/tests/` and run from there; clean up stale artifacts so the tree stays tidy.
