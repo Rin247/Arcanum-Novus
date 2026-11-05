@@ -93,3 +93,5 @@ Implementation files go in `src/`, headers in `include/`, tests in `tests/`. No 
 > Agents must make a to-do list as they work (audit -> to-do list -> commit to it), not work blindly.
 
 > `WANTED.md`/`HANDOVER.md` cap closed items: when a new item closes, verify the previous closed one, then remove it, so the files stay tidy and never grow forever.
+
+> `WANTED.md` is a living document, not a frozen record; update it as work progresses.
