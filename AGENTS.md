@@ -1,4 +1,5 @@
 # Repository Guidelines
+> First boot: read `Bible/HANDOVER.md` and `Bible/WANTED.md` before doing anything.
 
 ## Scope
 
