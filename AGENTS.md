@@ -128,7 +128,7 @@ A meaningful skeleton is a hand-off surface, not a boast about completeness. Eac
 Responsibility boundaries are enforced by the file size and structure rule.
 ## File size and structure (estate rule)
 
-Soft limit: 500 lines per file, 250 lines per function. Hard limit: 1000 lines per file, 250 lines per function.
+Soft limit: 750 lines per file, 60 lines per function. Hard limit: 1250 lines per file, 150 lines per function.
 Generated files, vendored code and pure data tables are exempt.
 
 Ratchet: a file or function over the soft limit must not grow. Before adding code to one, extract a
