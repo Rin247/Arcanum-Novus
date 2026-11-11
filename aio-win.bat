@@ -109,10 +109,18 @@ echo [aio] configured with preset %1
 exit /b 0
 
 rem  The tree CMake actually wrote -- flat build\ or build\<cfg>, chosen by the
-rem  preset -- is the newest CMakeCache.txt under build\. A guess runs the wrong
-rem  binary when a project writes flat (Hydra) and the face assumed a config dir.
+rem  preset. The configuration's own directory wins when it exists: a scan for the
+rem  newest CMakeCache.txt answers with whichever configuration was touched last,
+rem  and a tree holding both Debug and Release has both. The scan is only for a
+rem  project whose preset wrote a differently-named directory.
 :aio_win_tree
 set "BDIR=%AIO_HOME%\%AIO_BUILD_DIR%\%CONFIG%"
+if exist "%BDIR%\CMakeCache.txt" exit /b 0
+set "BDIR="
+for /f "delims=" %%C in ('dir /b /s /a-d /o-d "%AIO_HOME%\%AIO_BUILD_DIR%\CMakeCache.txt" 2^>nul') do (
+    if not defined BDIR for %%D in ("%%C") do set "BDIR=%%~dpD"
+)
+if not defined BDIR set "BDIR=%AIO_HOME%\%AIO_BUILD_DIR%\%CONFIG%\"
 exit /b 0
 
 :aio_win_build_it
@@ -124,6 +132,8 @@ if errorlevel 1 (
     echo [aio] build failed
     exit /b 1
 )
+rem  A Qt app that has not been deployed cannot start: 0xC0000135 STATUS_DLL_NOT_FOUND,
+rem  and the configure, the link and the suite all pass on the way to it.
 if "%AIO_CMAKE_QT%"=="1" "%QT_DIR%\bin\windeployqt.exe" --no-translations --compiler-runtime "%BDIR%\%AIO_APP%.exe"
 if "%AIO_QT_DEPLOY%"=="1" call :aio_win_package
 exit /b 0
@@ -143,6 +153,9 @@ if not defined EXE (
     exit /b 1
 )
 echo [aio] run "%EXE%"
+rem  The deployed tree finds its own DLLs; a tree built without windeployqt only
+rem  runs while Qt's bin is on PATH, which is this machine and not the user's.
+set "PATH=%QT_DIR%\bin;%PATH%"
 start "" /d "%EXE%\.." "%EXE%" %EXTRA%
 exit /b 0
 
