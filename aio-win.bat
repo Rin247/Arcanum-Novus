@@ -20,6 +20,9 @@ set "AIO_ANDROID_ID="
 set "AIO_BUILD_DIR=build"
 set "AIO_NODE="
 set "AIO_QT_DEPLOY="
+rem  A command run before configure, for a project whose build has a precondition:
+rem  Daedalus stops its own service first, because a running service holds the exe.
+set "AIO_PRE_BUILD="
 setlocal EnableExtensions EnableDelayedExpansion
 set "AIO_HOME=%~dp0"
 if "%AIO_HOME:~-1%"=="\" set "AIO_HOME=%AIO_HOME:~0,-1%"
@@ -42,6 +45,14 @@ echo [win] %VERB% is not implemented for Windows.
 exit /b 3
 
 :aio_win_build
+if defined AIO_PRE_BUILD (
+    echo [aio] pre-build: %AIO_PRE_BUILD%
+    call %AIO_PRE_BUILD%
+    if errorlevel 1 (
+        echo [aio] the pre-build step failed
+        exit /b 1
+    )
+)
 if /i "%AIO_FAMILY%"=="gradle" goto :aio_win_gradle
 if /i "%AIO_FAMILY%"=="node" goto :aio_win_node
 if "%AIO_CMAKE_DIR%"=="" (
@@ -134,8 +145,35 @@ if errorlevel 1 (
 )
 rem  A Qt app that has not been deployed cannot start: 0xC0000135 STATUS_DLL_NOT_FOUND,
 rem  and the configure, the link and the suite all pass on the way to it.
-if "%AIO_CMAKE_QT%"=="1" "%QT_DIR%\bin\windeployqt.exe" --no-translations --compiler-runtime "%BDIR%\%AIO_APP%.exe"
+rem  The exe is the stamped AIO_EXE, not the project name: a project whose
+rem  executable is named differently (Aur's "Aur Studio.exe") is not found by
+rem  the project name, and the deploy failed in silence.
+if "%AIO_CMAKE_QT%"=="1" call :aio_win_deploy_runtime
+if errorlevel 1 exit /b 1
 if "%AIO_QT_DEPLOY%"=="1" call :aio_win_package
+exit /b 0
+
+:aio_win_deploy_runtime
+set "DEPLOY_EXE=%BDIR%\%AIO_EXE%"
+if exist "%DEPLOY_EXE%" goto :aio_win_deploy_runtime_go
+if not "%AIO_EXE%"=="" (
+    rem  The stamp names the app. If the build did not produce it, deploying some
+    rem  other exe is worse than failing: it is a green build of the wrong binary.
+    echo [aio] %AIO_EXE% was not produced by the build; nothing was deployed
+    exit /b 1
+)
+call :aio_find_exe
+set "DEPLOY_EXE=%EXE%"
+if not defined DEPLOY_EXE (
+    echo [aio] no executable under %AIO_BUILD_DIR%; the Qt runtime was not deployed
+    exit /b 1
+)
+:aio_win_deploy_runtime_go
+"%QT_DIR%\bin\windeployqt.exe" --no-translations --compiler-runtime "%DEPLOY_EXE%"
+if errorlevel 1 (
+    echo [aio] windeployqt failed for "%DEPLOY_EXE%"; the tree will not start without its Qt runtime
+    exit /b 1
+)
 exit /b 0
 
 :aio_win_run
@@ -176,6 +214,11 @@ if "%AIO_CMAKE_APP%"=="0" (
     echo [aio] %AIO_APP% registers no CTest suite; nothing to run.
     exit /b 0
 )
+rem  The configuration's own tree first, for the same reason as :aio_win_tree -- a
+rem  scan over a tree holding both configurations answers with the other one. The
+rem  scan is the fallback for a project whose preset wrote a different directory.
+set "TDIR=%AIO_HOME%\%AIO_BUILD_DIR%\%CONFIG%"
+if exist "%TDIR%\CTestTestfile.cmake" goto aio_win_have_tests
 set "TDIR="
 for /f "delims=" %%T in ('dir /b /s /a-d /o-d "%AIO_HOME%\%AIO_BUILD_DIR%\CTestTestfile.cmake" 2^>nul') do (
     if not defined TDIR for %%D in ("%%T") do set "TDIR=%%~dpD"
@@ -184,6 +227,10 @@ if not defined TDIR (
     echo [aio] no configured tree under %AIO_BUILD_DIR%; run "AIO.bat build".
     exit /b 1
 )
+:aio_win_have_tests
+rem  A trailing backslash before a quote escapes the quote, so the arguments after
+rem  --test-dir were being read as part of the path.
+if "%TDIR:~-1%"=="\" set "TDIR=%TDIR:~0,-1%"
 rem  --timeout is named because no test may wait forever (QUIRKS.md 45).
 echo [aio] ctest --test-dir "%TDIR%" --timeout 300
 "%CTEST_EXE%" --test-dir "%TDIR%" -C Release --output-on-failure --timeout 300
