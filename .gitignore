@@ -89,3 +89,8 @@ temp/
 tmp/
 tools/
 reference/**
+
+# Scratch and upstream trees: on disk, never in git (owner ruling 2026-11-11)
+/temp/
+/test/
+/tool/
