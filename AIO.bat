@@ -114,7 +114,7 @@ if /i "%AIO_CHOICE%"=="Q" goto :main_exit
 if "%VERB%"=="" goto :main_menu
 call :main_go
 if "%ERRORLEVEL%"=="0" (echo [aio] OK) else (echo [aio] FAILED)
-if not defined NO_PAUSE pause
+rem auto-exit: no pause (estate rule)
 endlocal & exit /b 0
 
 :main_exit
