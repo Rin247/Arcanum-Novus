@@ -88,7 +88,7 @@ Implementation files and their headers are co-located in the same directory (e.g
 
 > Every app gets a Material 3 icon from the single generator in `AssetLibrary/Icons`.
 
-> Zoom is swept as a control, never as an axis.
+> Zoom is swept as a control, never as an axis. Fit is contracted inside the 75-125% band only — `DESIGN.md` §12.3. The render sweep runs at 100% only.
 
 > Plans: multi-session, multi-module or ~10-file tasks (and every refactor) get a plan file in `Bible/notes/`; see the `## Plans (estate rule)` section and `Bible/notes/_plan-template.md`. In-context to-do lists are working notes, never the source of truth.
 
