@@ -81,6 +81,10 @@ set "ISA_ARG="
 if defined X86 set "ISA_ARG=-DX86_ISA=%X86%"
 echo [aio] configure "%AIO_CMAKE_DIR%" preset=%AIO_CMAKE_PRESETS% config=%CONFIG%
 if "%AIO_CMAKE_PRESETS%"=="1" (
+    rem  The stamped preset name first: it is the one the project wrote down, and
+    rem  guessing from the configuration is how a tree gets configured twice.
+    call :aio_win_try_preset %AIO_CMAKE_PRESET_NAME%
+    if "!CFG_RC!"=="0" exit /b 0
     call :aio_win_try_preset %CONFIG%
     if "!CFG_RC!"=="0" exit /b 0
     call :aio_win_try_preset %CONFIG%Win64
@@ -110,7 +114,10 @@ set "CFG_RC=1"
 if "%~1"=="" exit /b 0
 "%CMAKE_EXE%" --list-presets 2>nul | findstr /i /c:"%~1" >nul
 if errorlevel 1 exit /b 0
-"%CMAKE_EXE%" --preset %1 %QT_ARG% %ISA_ARG%
+rem  A preset carries its own cache variables: `cmake --preset X -Dfoo=bar` is an
+rem  error, not a preset with an override, so the toolchain arguments are dropped
+rem  here rather than passed and refused.
+"%CMAKE_EXE%" --preset %1
 if errorlevel 1 (
     echo [aio] preset %1 failed
     exit /b 0

@@ -4,8 +4,8 @@ rem  AIO -- the one build entry point for arcanum-novus.
 rem
 rem  Written by tools\split_aio.py. This file takes the command line or the
 rem  menu and calls one of three standalone platform files beside it:
-rem    AIO-win.bat      Windows: configure/build, windeployqt, ctest
-rem    AIO-linux.bat    Linux: the same, on a Linux host
+rem    AIO-Win.bat      Windows: configure/build, windeployqt, ctest
+rem    AIO-Linux.bat    Linux: the same, on a Linux host
 rem    AIO-android.bat  Android: Gradle assemble/compile, adb install, am start
 rem
 rem    AIO.bat build windows Release    AIO.bat test android
@@ -39,6 +39,8 @@ set "EXE="
 set "FACE="
 
 set "WANT_VERB=%~1"
+rem  A non-interactive caller gets usage, not a menu that blocks on a read.
+if not defined WANT_VERB if defined NO_PAUSE goto :print_usage
 if not defined WANT_VERB goto :main_menu
 if /i "%WANT_VERB%"=="help" goto :print_usage
 if /i "%WANT_VERB%"=="-h" goto :print_usage
@@ -92,17 +94,18 @@ echo    0. Exit
 echo.
 set "AIO_CHOICE="
 set /p "AIO_CHOICE=Choice: "
-if not defined AIO_CHOICE goto :main_menu
+rem  An empty read is a closed or redirected stdin: exit, never spin.
+if not defined AIO_CHOICE goto :main_exit
 set "VERB="
-if "%AIO_CHOICE%"=="1" (set "VERB=build" & set "OS=aio-win" & set "CONFIG=Release")
-if "%AIO_CHOICE%"=="2" (set "VERB=build" & set "OS=aio-win" & set "CONFIG=Debug")
-if "%AIO_CHOICE%"=="3" (set "VERB=build" & set "OS=aio-linux" & set "CONFIG=Release")
+if "%AIO_CHOICE%"=="1" (set "VERB=build" & set "OS=AIO-Win" & set "CONFIG=Release")
+if "%AIO_CHOICE%"=="2" (set "VERB=build" & set "OS=AIO-Win" & set "CONFIG=Debug")
+if "%AIO_CHOICE%"=="3" (set "VERB=build" & set "OS=AIO-Linux" & set "CONFIG=Release")
 if "%AIO_CHOICE%"=="4" (set "VERB=build" & set "OS=aio-android" & set "CONFIG=Release")
-if "%AIO_CHOICE%"=="5" (set "VERB=compile" & set "OS=aio-win" & set "CONFIG=Release")
-if "%AIO_CHOICE%"=="6" (set "VERB=compile" & set "OS=aio-linux" & set "CONFIG=Release")
+if "%AIO_CHOICE%"=="5" (set "VERB=compile" & set "OS=AIO-Win" & set "CONFIG=Release")
+if "%AIO_CHOICE%"=="6" (set "VERB=compile" & set "OS=AIO-Linux" & set "CONFIG=Release")
 if "%AIO_CHOICE%"=="7" (set "VERB=compile" & set "OS=aio-android" & set "CONFIG=Release")
-if "%AIO_CHOICE%"=="8" (set "VERB=deploy" & set "OS=aio-win" & set "CONFIG=Release")
-if "%AIO_CHOICE%"=="9" (set "VERB=deploy" & set "OS=aio-linux" & set "CONFIG=Release")
+if "%AIO_CHOICE%"=="8" (set "VERB=deploy" & set "OS=AIO-Win" & set "CONFIG=Release")
+if "%AIO_CHOICE%"=="9" (set "VERB=deploy" & set "OS=AIO-Linux" & set "CONFIG=Release")
 if "%AIO_CHOICE%"=="10" (set "VERB=deploy" & set "OS=aio-android" & set "CONFIG=Release")
 if "%AIO_CHOICE%"=="11" set "VERB=debug"
 if "%AIO_CHOICE%"=="12" set "VERB=run"
@@ -114,7 +117,7 @@ if /i "%AIO_CHOICE%"=="Q" goto :main_exit
 if "%VERB%"=="" goto :main_menu
 call :main_go
 if "%ERRORLEVEL%"=="0" (echo [aio] OK) else (echo [aio] FAILED)
-rem auto-exit: no pause (estate rule)
+if not defined NO_PAUSE pause
 endlocal & exit /b 0
 
 :main_exit
@@ -138,21 +141,21 @@ endlocal & exit /b 0
 
 :verb_known
 set "VERB="
-if /i "%~1"=="build" (set "VERB=build" & set "OS=aio-win" & set "CONFIG=Release")
-if /i "%~1"=="compile" (set "VERB=compile" & set "OS=aio-win" & set "CONFIG=Release")
-if /i "%~1"=="debug" (set "VERB=debug" & set "OS=aio-win" & set "CONFIG=Debug")
-if /i "%~1"=="deploy" (set "VERB=deploy" & set "OS=aio-win" & set "CONFIG=Release")
-if /i "%~1"=="run" (set "VERB=run" & set "OS=aio-win" & set "CONFIG=Release")
-if /i "%~1"=="test" (set "VERB=test" & set "OS=aio-win" & set "CONFIG=Debug")
+if /i "%~1"=="build" (set "VERB=build" & set "OS=AIO-Win" & set "CONFIG=Release")
+if /i "%~1"=="compile" (set "VERB=compile" & set "OS=AIO-Win" & set "CONFIG=Release")
+if /i "%~1"=="debug" (set "VERB=debug" & set "OS=AIO-Win" & set "CONFIG=Debug")
+if /i "%~1"=="deploy" (set "VERB=deploy" & set "OS=AIO-Win" & set "CONFIG=Release")
+if /i "%~1"=="run" (set "VERB=run" & set "OS=AIO-Win" & set "CONFIG=Release")
+if /i "%~1"=="test" (set "VERB=test" & set "OS=AIO-Win" & set "CONFIG=Debug")
 if /i "%~1"=="clean" set "VERB=clean"
 if /i "%~1"=="update-third-party" set "VERB=update-third-party"
 exit /b 0
 
 :take_platform
 set "ARG=%~1"
-if /i "%ARG%"=="windows" (set "OS=aio-win" & exit /b 0)
-if /i "%ARG%"=="win" (set "OS=aio-win" & exit /b 0)
-if /i "%ARG%"=="linux" (set "OS=aio-linux" & exit /b 0)
+if /i "%ARG%"=="windows" (set "OS=AIO-Win" & exit /b 0)
+if /i "%ARG%"=="win" (set "OS=AIO-Win" & exit /b 0)
+if /i "%ARG%"=="linux" (set "OS=AIO-Linux" & exit /b 0)
 if /i "%ARG%"=="android" (set "OS=aio-android" & exit /b 0)
 if /i "%ARG%"=="Release" (set "CONFIG=Release" & exit /b 0)
 if /i "%ARG%"=="Debug" (set "CONFIG=Debug" & exit /b 0)
@@ -168,7 +171,7 @@ set "EXTRA=%EXTRA% %ARG%"
 exit /b 0
 
 :call_face
-if not defined OS set "OS=aio-win"
+if not defined OS set "OS=AIO-Win"
 set "FACE=%AIO_HOME%\%OS%.bat"
 if not exist "%FACE%" (
     echo [aio] %AIO_APP% has no %OS% part beside this file.
