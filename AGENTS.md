@@ -161,3 +161,12 @@ them. Update or delete the tests for moved code in the same change.
 
 Record the new layout and the reason for the split in `Bible/`, never in code comments. At the
 start of any task, check the size of every file you will touch; at the end, check again.
+
+## Python (estate rule)
+
+**Python 3.15 is the preferred interpreter. `py -3.15` selects it** — it is the newest version
+installed, and it is the default, so bare `python` resolves to it too. Write every helper script,
+checker and one-off measurement for 3.15 and run it through `py -3.15`; never pin or fall back to
+an older interpreter because a different `python` answered first on `PATH`, and never use the
+`C:\LLM\Data\...\Python` copies that belong to other applications. Authority: root `AGENTS.md`
+`## The toolchains live here`.
