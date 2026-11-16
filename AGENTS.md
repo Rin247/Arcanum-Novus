@@ -170,3 +170,5 @@ checker and one-off measurement for 3.15 and run it through `py -3.15`; never pi
 an older interpreter because a different `python` answered first on `PATH`, and never use the
 `C:\LLM\Data\...\Python` copies that belong to other applications. Authority: root `AGENTS.md`
 `## The toolchains live here`.
+
+**All MDs/docs in this project are living documents** — maintained in place with finished items pruned; git holds the history (estate root AGENTS.md).

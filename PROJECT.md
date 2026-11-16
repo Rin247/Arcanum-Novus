@@ -50,3 +50,5 @@ AIO.bat build windows Release
 - **Compiles run at `-j 8`**, never two at once.
 - **A render test asserts that a surface did not crash, not that it looks right: open the PNGs.**
 - **A build is a gate, not proof.** Launch the exe and confirm it boots and stays up.
+
+**All MDs/docs in this project are living documents** — maintained in place with finished items pruned; git holds the history (estate root AGENTS.md).
