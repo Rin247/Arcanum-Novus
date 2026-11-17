@@ -6,7 +6,7 @@ rem  Written by tools\split_aio.py. This file takes the command line or the
 rem  menu and calls one of three standalone platform files beside it:
 rem    AIO-Win.bat      Windows: configure/build, windeployqt, ctest
 rem    AIO-Linux.bat    Linux: the same, on a Linux host
-rem    AIO-android.bat  Android: Gradle assemble/compile, adb install, am start
+rem    aio-android.bat  Android: Gradle assemble/compile, adb install, am start
 rem
 rem    AIO.bat build windows Release    AIO.bat test android
 rem    AIO.bat run                      with no verb: the menu
@@ -117,7 +117,7 @@ if /i "%AIO_CHOICE%"=="Q" goto :main_exit
 if "%VERB%"=="" goto :main_menu
 call :main_go
 if "%ERRORLEVEL%"=="0" (echo [aio] OK) else (echo [aio] FAILED)
-if not defined NO_PAUSE pause
+REM autoexit on completion
 endlocal & exit /b 0
 
 :main_exit
@@ -136,7 +136,8 @@ exit /b 0
 :main_list
 echo AIO.bat -- %AIO_APP%
 echo   family   %AIO_FAMILY%
-echo   owned by win
+echo   owned by Win
+call "%AIO_HOME%\AIO-Win.bat" --list
 endlocal & exit /b 0
 
 :verb_known
